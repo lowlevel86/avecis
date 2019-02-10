@@ -1,0 +1,25 @@
+CC = i686-w64-mingw32-gcc
+WINDRES = i686-w64-mingw32-windres
+RES = rsrc.res
+OBJ = main.o server.o sendReceive.o drawGraphics.o line.o avecisHandler.o playSnd.o cmdLineArgs.o $(RES)
+LIBS = -mwindows -lcomctl32 -lwinmm -lws2_32
+BIN = avecis.exe
+CFLAGS = -Wall
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(OBJ) -o $(BIN) $(LIBS)
+
+main.o: main.c
+	$(CC) -c main.c -o main.o $(CFLAGS)
+
+rsrc.res: rsrc.rc 
+	$(WINDRES) --use-temp-file -i rsrc.rc --input-format=rc -o rsrc.res -O coff
