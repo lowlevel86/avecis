@@ -155,6 +155,73 @@ void receiveCallback(char *bytes, int byteCnt)
          opDataBuff = malloc(opDataSz);
       }
       
+      
+      ////////////////////////////////////////////////////////////
+      ///////////// these operations require no data /////////////
+      
+      if (opType == CLEAR_SCREEN)
+      {
+         clearScreen();
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
+      
+      if (opType == SHOW_CONTENT)
+      {
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)SHOW_CONTENT, (LPARAM)0);
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
+      
+      if (opType == STOP_SOUND)
+      {
+         stopSound();
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
+      
+      if (opType == CONNECTION_ESTABLISHED)
+      {
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
+      
+      ////////////////////////////////////////////////////////////
+      
+      
       if (byteInc >= byteCnt)
       return;
       
@@ -483,25 +550,6 @@ void receiveCallback(char *bytes, int byteCnt)
       return;
       
       
-      if (opType == CLEAR_SCREEN)
-      {
-         clearScreen();
-         
-         // reset variables
-         opDataSz = 0;
-         opDataSzBytesAcquired = 0;
-         opType = UNKNOWN;
-         
-         if (opDataBuffInc)
-         free(opDataBuff);
-         
-         opDataBuffInc = 0;
-      }
-      
-      if (byteInc >= byteCnt)
-      return;
-      
-      
       if (opType == DRAW_LINE)
       {
          while (TRUE)
@@ -566,25 +614,6 @@ void receiveCallback(char *bytes, int byteCnt)
       return;
       
       
-      if (opType == SHOW_CONTENT)
-      {
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)SHOW_CONTENT, (LPARAM)0);
-         
-         // reset variables
-         opDataSz = 0;
-         opDataSzBytesAcquired = 0;
-         opType = UNKNOWN;
-         
-         if (opDataBuffInc)
-         free(opDataBuff);
-         
-         opDataBuffInc = 0;
-      }
-      
-      if (byteInc >= byteCnt)
-      return;
-      
-      
       if (opType == PRINT_STATUS)
       {
          while (TRUE)
@@ -630,44 +659,6 @@ void receiveCallback(char *bytes, int byteCnt)
          }
          
          playSound((float *)&opDataBuff[0], (float *)&opDataBuff[opDataSz / 2], opDataSz/4 / 2);
-         
-         // reset variables
-         opDataSz = 0;
-         opDataSzBytesAcquired = 0;
-         opType = UNKNOWN;
-         
-         if (opDataBuffInc)
-         free(opDataBuff);
-         
-         opDataBuffInc = 0;
-      }
-      
-      if (byteInc >= byteCnt)
-      return;
-      
-      
-      if (opType == STOP_SOUND)
-      {
-         stopSound();
-         
-         // reset variables
-         opDataSz = 0;
-         opDataSzBytesAcquired = 0;
-         opType = UNKNOWN;
-         
-         if (opDataBuffInc)
-         free(opDataBuff);
-         
-         opDataBuffInc = 0;
-      }
-      
-      if (byteInc >= byteCnt)
-      return;
-      
-      
-      if (opType == CONNECTION_ESTABLISHED)
-      {
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
          
          // reset variables
          opDataSz = 0;
