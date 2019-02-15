@@ -25,6 +25,7 @@
 #define MOUSE_WHEEL_UP 9
 #define MOUSE_WHEEL_DOWN 10
 #define SOUND_DONE_SIGNAL 11
+#define DISCONNECT_SIGNAL 0xFF
 
 #define KC_BACKSPACE 0x8
 #define KC_TAB 0x9
@@ -300,7 +301,7 @@ void waitUntilReceiverEnd()
    WaitForSingleObject(sendReceive_ReceiveData_Thread, INFINITE);
 }
 
-void onlyCloseDataReceiver()
+void closeDataReceiver()
 {
    sendReceive_CloseDataReceiver = TRUE;
 }
@@ -334,38 +335,9 @@ void endSendReceiveClient()
 #define PRINT_STATUS 14
 #define PLAY_SOUND 15
 #define STOP_SOUND 16
+#define END_TRANSMISSION 0xFF
 
 void eventCallback(int, int, int, int);
-
-int avecisConnect(char *hostname, char *port)
-{
-   if (iniSendReceiveClient(hostname, port))
-   return 1;
-   
-   return 0;
-}
-
-// this function is not to be used if avecisDisconnect() is used
-void blockAvecisDisconnect()
-{
-   waitUntilReceiverEnd();
-}
-
-// this function is not to be used if avecisDisconnect() is used
-void unblockAvecisDisconnect()
-{
-   endSendReceiveClient();
-}
-
-// this function is not to be used if
-// blockAvecisDisconnect() and
-// unblockAvecisDisconnect() is used
-void avecisDisconnect()
-{
-   onlyCloseDataReceiver();
-   waitUntilReceiverEnd();
-   endSendReceiveClient();
-}
 
 void viewStart(float value)
 {
@@ -655,6 +627,17 @@ void stopSound()
    sendData(&opDataHead[0], sizeof(opDataHead));
 }
 
+void endTransmission()
+{
+   char opDataHead[5] = {0};
+   
+   // place the size and type into the data head array
+   opDataHead[4] = END_TRANSMISSION;
+   
+   // send the data head array
+   sendData(&opDataHead[0], sizeof(opDataHead));
+}
+
 void receiveCallback(char *bytes, int byteCnt)
 {
    int byteInc = 0;
@@ -720,6 +703,38 @@ void receiveCallback(char *bytes, int byteCnt)
       if (byteInc >= byteCnt)
       return;
    }
+}
+
+int avecisConnect(char *hostname, char *port)
+{
+   if (iniSendReceiveClient(hostname, port))
+   return 1;
+   
+   return 0;
+}
+
+// this function is not to be used if avecisDisconnect() is used
+void blockAvecisDisconnect()
+{
+   waitUntilReceiverEnd();
+}
+
+// this function is not to be used if avecisDisconnect() is used
+void unblockAvecisDisconnect()
+{
+   // blockAvecisDisconnect() must be called first
+   endSendReceiveClient();
+}
+
+// this function is not to be used if
+// blockAvecisDisconnect() and
+// unblockAvecisDisconnect() is used
+void avecisDisconnect()
+{
+   closeDataReceiver();
+   endTransmission();
+   waitUntilReceiverEnd();
+   endSendReceiveClient();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

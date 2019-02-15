@@ -27,6 +27,7 @@
 #define PLAY_SOUND 15
 #define STOP_SOUND 16
 #define CONNECTION_ESTABLISHED 17
+#define END_TRANSMISSION 0xFF
 
 HWND winHwnd_glob;
 char *colorData;
@@ -207,6 +208,21 @@ void receiveCallback(char *bytes, int byteCnt)
       if (opType == CONNECTION_ESTABLISHED)
       {
          PostMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
+      
+      if (opType == END_TRANSMISSION)
+      {
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
          
          // reset variables
          opDataSz = 0;

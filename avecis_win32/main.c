@@ -21,6 +21,7 @@
 #define MOUSE_MOVE 8
 #define MOUSE_WHEEL_UP 9
 #define MOUSE_WHEEL_DOWN 10
+#define DISCONNECT_SIGNAL 0xFF
 
 char flags[9] = {'t', 'x', 'y', 'w', 'h', 'p', 'b', 's', 'u'};
 int argTypes[9] = {string_arg, int_arg, int_arg, int_arg,
@@ -214,6 +215,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       #define SHOW_CONTENT 13
       #define PRINT_STATUS 14
       #define CONNECTION_ESTABLISHED 17
+      #define END_TRANSMISSION 0xFF
       
       if (wParam == SHOW_CONTENT)
       showContent();
@@ -229,6 +231,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             ShowWindow(hwnd, SW_RESTORE);
          }
       }
+      
+      if (wParam == END_TRANSMISSION)
+      {
+         sendInputEvent(DISCONNECT_SIGNAL, 0);
+         endAvecisHandler();
+         iniAvecisHandler(argL.port, hwnd);
+      }
    }
    
    if (WM_PAINT == message)
@@ -236,6 +245,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
    
    if (WM_DESTROY == message)
    {
+      sendInputEvent(DISCONNECT_SIGNAL, 0);
       endAvecisHandler();
       stopSound();
       closeGraphics();

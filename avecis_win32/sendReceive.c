@@ -86,7 +86,7 @@ int iniSendReceiveServer(char *port)
    
    port_addr = port;
    
-   //closeDataReceiver = FALSE;
+   closeDataReceiver = FALSE;
    receiveData_Thread = (HANDLE)_beginthread(receiveData, 0, port_addr);
    
    return 0;
