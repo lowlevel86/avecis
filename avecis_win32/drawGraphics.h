@@ -15,7 +15,7 @@ void fogStart(float);
 void fogEnd(float);
 void antialiasingMode(int);
 
-void setColor(int *, int);
+void setColor(char *, int);
 void clearScreen();
 void drawLine(float *, int);
 void drawPath(float *, int);

@@ -19,6 +19,7 @@ RENDRINFO rI;
 
 int black = 0x000000;
 int *colorData = &black;
+int colorData_allocated = FALSE;
 int colorCnt = 1;
 int colorInc = 0;
 
@@ -129,10 +130,26 @@ void antialiasingMode(int value)
    antialiasing = value;
 }
 
-void setColor(int *colorArray, int cnt)
+void setColor(char *colorBytes, int size)
 {
-   colorData = colorArray;
-   colorCnt = cnt;
+   int i;
+   int cInc = 0;
+   
+   if (colorData_allocated)
+   free(colorData);
+   
+   colorData = (int *)malloc(size * sizeof(int));
+   colorData_allocated = TRUE;
+   
+   for (i=0; i < size; i+=3)
+   {
+      colorData[cInc] = ((int)colorBytes[i] & 0xFF) |
+                       (((int)colorBytes[i+1]<<8) & 0xFF00) |
+                       (((int)colorBytes[i+2]<<16) & 0xFF0000);
+      cInc++;
+   }
+   
+   colorCnt = cInc;
    colorInc = 0;
 }
 
@@ -144,7 +161,7 @@ void clearScreen()
    for (x = 0; x < rI.xWin; x++)
    {
       scrnBuff[x][y] = colorData[colorInc];
-
+      
       if (colorInc < colorCnt-1)
       colorInc++;
    }
@@ -289,6 +306,9 @@ void closeGraphics()
    for (i = 0; i < rI.xWin; i++)
    free(scrnBuff[i]);
    free(scrnBuff);
+   
+   if (colorData_allocated)
+   free(colorData);
    
    free(pBits);
 }

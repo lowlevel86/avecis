@@ -30,11 +30,7 @@
 #define END_TRANSMISSION 0xFF
 
 HWND winHwnd_glob;
-char *colorData;
-int colorData_allocated = FALSE;
-int colorDataOffset = 0;
-char *textData;
-int textData_allocated = FALSE;
+char textData[1024] = {0};
 
 
 void iniAvecisHandler(char *port, HWND winHwnd)
@@ -45,18 +41,12 @@ void iniAvecisHandler(char *port, HWND winHwnd)
 
 void endAvecisHandler()
 {
-   if (colorData_allocated)
-   free(colorData);
-   
-   if (textData_allocated)
-   free(textData);
-   
    endSendReceiveServer();
 }
 
 void receiveCallback(char *bytes, int byteCnt)
 {
-   int r, g, b;
+   int i, r, g, b;
    int byteInc = 0;
    static uint32_t opDataSz = 0;
    static int opDataSzBytesAcquired = 0;
@@ -131,28 +121,6 @@ void receiveCallback(char *bytes, int byteCnt)
          opType = bytes[byteInc] & 0xFF;
          byteInc++;
          
-         if (opType == SET_COLOR)
-         {
-            if (colorData_allocated)
-            free(colorData);
-            
-            colorData = (char *)malloc(opDataSz/3 * 4);
-            colorData_allocated = TRUE;
-            
-            colorDataOffset = 0;
-         }
-         
-         if (opType == PRINT_STATUS)
-         {
-            if (textData_allocated)
-            free(textData);
-            
-            textData = (char *)malloc(opDataSz);
-            textData_allocated = TRUE;
-         }
-         
-         if ((opType != SET_COLOR) &&
-             (opType != PRINT_STATUS))
          opDataBuff = malloc(opDataSz);
       }
       
@@ -537,11 +505,7 @@ void receiveCallback(char *bytes, int byteCnt)
       {
          while (TRUE)
          {
-            colorData[opDataBuffInc+colorDataOffset] = bytes[byteInc];
-            
-            if (opDataBuffInc % 3 == 2)
-            colorDataOffset++;
-            
+            opDataBuff[opDataBuffInc] = bytes[byteInc];
             opDataBuffInc++;
             byteInc++;
             
@@ -552,12 +516,15 @@ void receiveCallback(char *bytes, int byteCnt)
             return;
          }
          
-         setColor((int *)colorData, opDataSz/3);
+         setColor(opDataBuff, opDataSz);
          
          // reset variables
          opDataSz = 0;
          opDataSzBytesAcquired = 0;
          opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
          
          opDataBuffInc = 0;
       }
@@ -634,7 +601,7 @@ void receiveCallback(char *bytes, int byteCnt)
       {
          while (TRUE)
          {
-            textData[opDataBuffInc] = bytes[byteInc];
+            opDataBuff[opDataBuffInc] = bytes[byteInc];
             opDataBuffInc++;
             byteInc++;
             
@@ -645,12 +612,18 @@ void receiveCallback(char *bytes, int byteCnt)
             return;
          }
          
+         for (i=0; i < 1024-1; i++)
+         textData[i] = opDataBuff[i];
+         
          PostMessage(winHwnd_glob, WM_USER, (WPARAM)PRINT_STATUS, (LPARAM)&textData[0]);
          
          // reset variables
          opDataSz = 0;
          opDataSzBytesAcquired = 0;
          opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
          
          opDataBuffInc = 0;
       }
