@@ -612,8 +612,15 @@ void receiveCallback(char *bytes, int byteCnt)
             return;
          }
          
-         for (i=0; i < 1024-1; i++)
-         textData[i] = opDataBuff[i];
+         for (i=0; i < opDataSz; i++)
+         {
+            if (i >= sizeof(textData)-1)
+            break;
+            
+            textData[i] = opDataBuff[i];
+         }
+         
+         textData[i] = 0;
          
          PostMessage(winHwnd_glob, WM_USER, (WPARAM)PRINT_STATUS, (LPARAM)&textData[0]);
          
