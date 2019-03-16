@@ -46,7 +46,7 @@ def eventCallback(evType, keyCode, xM, yM):
       clearScreen()
       showContent()
    
-   printSB("evType:%i keyCode:%x xM:%i yM:%i -- Press Esc to Disconnect" % (evType, keyCode, xM, yM))
+   printSB("evType:%i keyCode:0x%X xM:%i yM:%i -- Press Esc to Disconnect" % (evType, keyCode, xM, yM))
    
    if keyCode == KC_ESC:
       unblockAvecisDisconnect()
