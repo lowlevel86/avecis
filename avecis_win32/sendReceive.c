@@ -74,7 +74,7 @@ int sendData(char *bytes, int byteCnt)
    iResult = send(ClientSocket, &bytes[0], byteCnt, 0);
    
    if (iResult == SOCKET_ERROR)
-   printf("send failed with error: %d\n", WSAGetLastError());
+   printf("WSA: %d\n", WSAGetLastError());
 
    return iResult;
 }

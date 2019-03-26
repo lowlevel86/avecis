@@ -125,6 +125,23 @@ void receiveCallback(char *bytes, int byteCnt)
       }
       
       
+      // print function count, type and size for debugging
+      /*static int funcCount = 0;
+      if (opDataBuffInc == 0)
+      {
+         funcCount++;
+         printf("%i, type:%i, data size:%i\n", funcCount, opType, opDataSz);
+      }*/
+      
+      // check for errors
+      if (opType != 0xFF)
+      if ((opType < -1) || (opType > 17))
+      {
+         printf("Avecis data error\n");
+         exit(EXIT_FAILURE);//exit immediately if error
+      }
+      
+      
       ////////////////////////////////////////////////////////////
       ///////////// these operations require no data /////////////
       
