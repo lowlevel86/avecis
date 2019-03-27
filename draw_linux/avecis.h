@@ -309,6 +309,8 @@ void endSendReceiveClient()
 #define STOP_SOUND 16
 #define END_TRANSMISSION 0xFF
 
+pthread_mutex_t avecis_sendData_lock = PTHREAD_MUTEX_INITIALIZER;
+
 void eventCallback(int, int, int, int);
 
 void viewStart(float value)
@@ -319,11 +321,15 @@ void viewStart(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_VIEW_START;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void viewEnd(float value)
@@ -334,11 +340,15 @@ void viewEnd(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_VIEW_END;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void setPerspective(float value)
@@ -349,11 +359,15 @@ void setPerspective(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_PERSPECTIVE;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void orthographicMode(int value)
@@ -364,11 +378,15 @@ void orthographicMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_ORTHOGRAPHIC_MODE;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void fogMode(int value)
@@ -379,11 +397,15 @@ void fogMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_FOG_MODE;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void fogColor(int value)
@@ -394,11 +416,15 @@ void fogColor(int value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_COLOR;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void fogStart(float value)
@@ -409,11 +435,15 @@ void fogStart(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_START;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void fogEnd(float value)
@@ -424,11 +454,15 @@ void fogEnd(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_END;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void antialiasingMode(int value)
@@ -439,11 +473,15 @@ void antialiasingMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_ANTIALIASING_MODE;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void setColor(char *colorData, int byteDataCnt)
@@ -461,11 +499,15 @@ void setColor(char *colorData, int byteDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = SET_COLOR;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&colorData[0], size);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void clearScreen()
@@ -475,8 +517,12 @@ void clearScreen()
    // place the size and type into the data head array
    opDataHead[4] = CLEAR_SCREEN;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void drawLine(float *coordData, int floatDataCnt)
@@ -494,11 +540,15 @@ void drawLine(float *coordData, int floatDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = DRAW_LINE;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&coordData[0], size);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void drawPath(float *coordData, int floatDataCnt)
@@ -516,11 +566,15 @@ void drawPath(float *coordData, int floatDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = DRAW_PATH;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&coordData[0], size);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void showContent()
@@ -530,8 +584,12 @@ void showContent()
    // place the size and type into the data head array
    opDataHead[4] = SHOW_CONTENT;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void printSB(char *fmtStr, ...)
@@ -556,11 +614,15 @@ void printSB(char *fmtStr, ...)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = PRINT_STATUS;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData(&buff[0], size);
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
    
    free(buff);
 }
@@ -580,12 +642,16 @@ void playSound(float *leftSnd, float *rightSnd, int sampleCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = PLAY_SOUND;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&leftSnd[0], sampleCnt * sizeof(float));
    sendData((char *)&rightSnd[0], sampleCnt * sizeof(float));
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void stopSound()
@@ -595,8 +661,12 @@ void stopSound()
    // place the size and type into the data head array
    opDataHead[4] = STOP_SOUND;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void endTransmission()
@@ -606,8 +676,12 @@ void endTransmission()
    // place the size and type into the data head array
    opDataHead[4] = END_TRANSMISSION;
    
+   pthread_mutex_lock(&avecis_sendData_lock);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
 void receiveCallback(char *bytes, int byteCnt)
