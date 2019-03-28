@@ -1,7 +1,7 @@
 #include "avecis.h"
 
 #define HOSTNAME "127.0.0.1"
-#define PORT "27015"
+#define PORT 27015
 
 //compile with:
 //gcc main.c -lws2_32 -o draw.exe
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
    setColor(white, 3);
    clearScreen();
    showContent();
-   antialiasingMode(ON);
+   antialiasingMode(OFF);
    
    blockAvecisDisconnect();
    return 0;

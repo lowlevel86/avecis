@@ -1,7 +1,7 @@
 #include "avecis.h"
 
 #define HOSTNAME "127.0.0.1"
-#define PORT "27015"
+#define PORT 27015
 
 //compile with:
 //gcc main.c -lws2_32 -o hello.exe

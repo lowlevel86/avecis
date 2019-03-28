@@ -147,13 +147,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// SERVER CONNECTION FUNCTIONS /////////////////////////////////
 
-int iniClient(char *hostname, char *portNumStr, SOCKET *ConnectSocket)
+int iniClient(char *hostname, int portNum, SOCKET *ConnectSocket)
 {
    WSADATA wsaData;
    struct addrinfo *result = NULL;
    struct addrinfo *ptr = NULL;
    struct addrinfo hints;
    int iResult;
+   char portNumStr[16];
 
    // Initialize Winsock
    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -169,6 +170,7 @@ int iniClient(char *hostname, char *portNumStr, SOCKET *ConnectSocket)
    hints.ai_protocol = IPPROTO_TCP;
 
    // Resolve the server address and port
+   sprintf(portNumStr, "%d", portNum);
    iResult = getaddrinfo(hostname, portNumStr, &hints, &result);
    if (iResult != 0)
    {
@@ -278,7 +280,7 @@ int sendData(char *bytes, int byteCnt)
    return iResult;
 }
 
-int iniSendReceiveClient(char *hostname, char *port)
+int iniSendReceiveClient(char *hostname, int port)
 {
    unsigned ThreadId;
    void *receiveCallback_addr;
@@ -705,7 +707,7 @@ void receiveCallback(char *bytes, int byteCnt)
    }
 }
 
-int avecisConnect(char *hostname, char *port)
+int avecisConnect(char *hostname, int port)
 {
    if (iniSendReceiveClient(hostname, port))
    return 1;

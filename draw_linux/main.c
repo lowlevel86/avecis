@@ -71,7 +71,7 @@ int main(int argc, char **argv)
    setColor(white, 3);
    clearScreen();
    showContent();
-   antialiasingMode(ON);
+   antialiasingMode(OFF);
    
    blockAvecisDisconnect();
    return 0;

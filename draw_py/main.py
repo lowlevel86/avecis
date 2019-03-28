@@ -57,7 +57,7 @@ def Main():
    setColor([0xFF, 0xFF, 0xFF])
    clearScreen()
    showContent()
-   antialiasingMode(ON)
+   antialiasingMode(OFF)
    
    blockAvecisDisconnect()
 
