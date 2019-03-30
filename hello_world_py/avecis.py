@@ -211,6 +211,8 @@ def endSendReceiveClient():
 #########################################################################
 ######################### MAIN AVECIS FUNCTIONS #########################
 
+avecis_sendData_lock = threading.Lock()
+
 def bToINT(ch):
    if sys.version_info < (3,):
       return ord(ch)
@@ -218,129 +220,202 @@ def bToINT(ch):
       return ch
 
 def viewStart(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x00') # 0 = SET_VIEW_START
-   
-   # send the data
-   sendData(struct.pack('<f', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x00') # 0 = SET_VIEW_START
+      
+      # send the data
+      sendData(struct.pack('<f', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def viewEnd(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x01') # 1 = SET_VIEW_END
-   
-   # send the data
-   sendData(struct.pack('<f', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x01') # 1 = SET_VIEW_END
+      
+      # send the data
+      sendData(struct.pack('<f', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def setPerspective(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x02') # 2 = SET_PERSPECTIVE
-   
-   # send the data
-   sendData(struct.pack('<f', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x02') # 2 = SET_PERSPECTIVE
+      
+      # send the data
+      sendData(struct.pack('<f', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def orthographicMode(value):
-   # send the data head array
-   sendData(struct.pack('<I', 1) + b'\x03') # 3 = SET_ORTHOGRAPHIC_MODE
-   
-   # send the data
-   if value:
-      sendData(b'\x01')
-   else:
-      sendData(b'\x00')
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 1) + b'\x03') # 3 = SET_ORTHOGRAPHIC_MODE
+      
+      # send the data
+      if value:
+         sendData(b'\x01')
+      else:
+         sendData(b'\x00')
+   finally:
+      avecis_sendData_lock.release()
 
 def fogMode(value):
-   # send the data head array
-   sendData(struct.pack('<I', 1) + b'\x04') # 4 = SET_FOG_MODE
-   
-   # send the data
-   if value:
-      sendData(b'\x01')
-   else:
-      sendData(b'\x00')
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 1) + b'\x04') # 4 = SET_FOG_MODE
+      
+      # send the data
+      if value:
+         sendData(b'\x01')
+      else:
+         sendData(b'\x00')
+   finally:
+      avecis_sendData_lock.release()
 
 def fogColor(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x05') # 5 = SET_FOG_COLOR
-   
-   # send the data
-   sendData(struct.pack('<I', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x05') # 5 = SET_FOG_COLOR
+      
+      # send the data
+      sendData(struct.pack('<I', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def fogStart(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x06') # 6 = SET_FOG_START
-   
-   # send the data
-   sendData(struct.pack('<f', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x06') # 6 = SET_FOG_START
+      
+      # send the data
+      sendData(struct.pack('<f', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def fogEnd(value):
-   # send the data head array
-   sendData(struct.pack('<I', 4) + b'\x07') # 7 = SET_FOG_END
-   
-   # send the data
-   sendData(struct.pack('<f', value))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 4) + b'\x07') # 7 = SET_FOG_END
+      
+      # send the data
+      sendData(struct.pack('<f', value))
+   finally:
+      avecis_sendData_lock.release()
 
 def antialiasingMode(value):
-   # send the data head array
-   sendData(struct.pack('<I', 1) + b'\x08') # 8 = SET_ANTIALIASING_MODE
-   
-   # send the data
-   if value:
-      sendData(b'\x01')
-   else:
-      sendData(b'\x00')
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', 1) + b'\x08') # 8 = SET_ANTIALIASING_MODE
+      
+      # send the data
+      if value:
+         sendData(b'\x01')
+      else:
+         sendData(b'\x00')
+   finally:
+      avecis_sendData_lock.release()
 
 def setColor(colorData):
-   # send the data head array
-   sendData(struct.pack('<I', len(colorData)) + b'\x09') # 9 = SET_COLOR
-   
-   # send the data
-   sendData(struct.pack('%sB' % len(colorData), *colorData))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', len(colorData)) + b'\x09') # 9 = SET_COLOR
+      
+      # send the data
+      sendData(struct.pack('%sB' % len(colorData), *colorData))
+   finally:
+      avecis_sendData_lock.release()
 
 def clearScreen():
-   # send the data head array
-   sendData(b'\x00\x00\x00\x00\x0A') # 10 = CLEAR_SCREEN
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(b'\x00\x00\x00\x00\x0A') # 10 = CLEAR_SCREEN
+   finally:
+      avecis_sendData_lock.release()
 
 def drawLine(coordData):
-   # send the data head array
-   sendData(struct.pack('<I', len(coordData)*4) + b'\x0B') # 11 = DRAW_LINE
-   
-   # send the data
-   sendData(struct.pack('<%sf' % len(coordData), *coordData))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', len(coordData)*4) + b'\x0B') # 11 = DRAW_LINE
+      
+      # send the data
+      sendData(struct.pack('<%sf' % len(coordData), *coordData))
+   finally:
+      avecis_sendData_lock.release()
 
 def drawPath(coordData):
-   # send the data head array
-   sendData(struct.pack('<I', len(coordData)*4) + b'\x0C') # 12 = DRAW_PATH
-   
-   # send the data
-   sendData(struct.pack('<%sf' % len(coordData), *coordData))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', len(coordData)*4) + b'\x0C') # 12 = DRAW_PATH
+      
+      # send the data
+      sendData(struct.pack('<%sf' % len(coordData), *coordData))
+   finally:
+      avecis_sendData_lock.release()
 
 def showContent():
-   # send the data head array
-   sendData(b'\x00\x00\x00\x00\x0D') # 13 = SHOW_CONTENT
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(b'\x00\x00\x00\x00\x0D') # 13 = SHOW_CONTENT
+   finally:
+      avecis_sendData_lock.release()
 
 def printSB(textData):
    # send the data head array
    asciiStr = textData.encode('ascii')
-   sendData(struct.pack('<I', len(asciiStr)) + b'\x0E') # 14 = PRINT_STATUS
    
-   # send the data
-   sendData(asciiStr)
+   avecis_sendData_lock.acquire()
+   try:
+      sendData(struct.pack('<I', len(asciiStr)) + b'\x0E') # 14 = PRINT_STATUS
+      
+      # send the data
+      sendData(asciiStr)
+   finally:
+      avecis_sendData_lock.release()
 
 def playSound(leftSnd, rightSnd):
-   # send the data head array
-   sendData(struct.pack('<I', len(leftSnd)*4 + len(rightSnd)*4) + b'\x0F') # 15 = PLAY_SOUND
-   
-   # send the data
-   sendData(struct.pack('<%sf' % len(leftSnd), *leftSnd))
-   sendData(struct.pack('<%sf' % len(rightSnd), *rightSnd))
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(struct.pack('<I', len(leftSnd)*4 + len(rightSnd)*4) + b'\x0F') # 15 = PLAY_SOUND
+      
+      # send the data
+      sendData(struct.pack('<%sf' % len(leftSnd), *leftSnd))
+      sendData(struct.pack('<%sf' % len(rightSnd), *rightSnd))
+   finally:
+      avecis_sendData_lock.release()
 
 def stopSound():
-   # send the data head array
-   sendData(b'\x00\x00\x00\x00\x10') # 16 = STOP_SOUND
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(b'\x00\x00\x00\x00\x10') # 16 = STOP_SOUND
+   finally:
+      avecis_sendData_lock.release()
 
 def endTransmission():
-   # send the data head array
-   sendData(b'\x00\x00\x00\x00\xFF') # 255 = END_TRANSMISSION
+   avecis_sendData_lock.acquire()
+   try:
+      # send the data head array
+      sendData(b'\x00\x00\x00\x00\xFF') # 255 = END_TRANSMISSION
+   finally:
+      avecis_sendData_lock.release()
 
 #static variables
 avecis_varsDataInc = 0
