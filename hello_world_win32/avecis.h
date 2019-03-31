@@ -339,6 +339,8 @@ void endSendReceiveClient()
 #define STOP_SOUND 16
 #define END_TRANSMISSION 0xFF
 
+HANDLE avecis_sendData_lock;
+
 void eventCallback(int, int, int, int);
 
 void viewStart(float value)
@@ -349,11 +351,15 @@ void viewStart(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_VIEW_START;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void viewEnd(float value)
@@ -364,11 +370,15 @@ void viewEnd(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_VIEW_END;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void setPerspective(float value)
@@ -379,11 +389,15 @@ void setPerspective(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_PERSPECTIVE;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void orthographicMode(int value)
@@ -394,11 +408,15 @@ void orthographicMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_ORTHOGRAPHIC_MODE;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void fogMode(int value)
@@ -409,11 +427,15 @@ void fogMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_FOG_MODE;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void fogColor(int value)
@@ -424,11 +446,15 @@ void fogColor(int value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_COLOR;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void fogStart(float value)
@@ -439,11 +465,15 @@ void fogStart(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_START;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void fogEnd(float value)
@@ -454,11 +484,15 @@ void fogEnd(float value)
    opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_END;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 4);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void antialiasingMode(int value)
@@ -469,11 +503,15 @@ void antialiasingMode(int value)
    opDataHead[0] = 1;
    opDataHead[4] = SET_ANTIALIASING_MODE;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&value, 1);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void setColor(char *colorData, int byteDataCnt)
@@ -491,11 +529,15 @@ void setColor(char *colorData, int byteDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = SET_COLOR;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&colorData[0], size);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void clearScreen()
@@ -505,8 +547,12 @@ void clearScreen()
    // place the size and type into the data head array
    opDataHead[4] = CLEAR_SCREEN;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void drawLine(float *coordData, int floatDataCnt)
@@ -524,11 +570,15 @@ void drawLine(float *coordData, int floatDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = DRAW_LINE;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&coordData[0], size);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void drawPath(float *coordData, int floatDataCnt)
@@ -546,11 +596,15 @@ void drawPath(float *coordData, int floatDataCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = DRAW_PATH;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&coordData[0], size);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void showContent()
@@ -560,8 +614,12 @@ void showContent()
    // place the size and type into the data head array
    opDataHead[4] = SHOW_CONTENT;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void printSB(char *fmtStr, ...)
@@ -586,11 +644,15 @@ void printSB(char *fmtStr, ...)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = PRINT_STATUS;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData(&buff[0], size);
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
    
    free(buff);
 }
@@ -610,12 +672,16 @@ void playSound(float *leftSnd, float *rightSnd, int sampleCnt)
    opDataHead[3] = (size >> 24) & 0xFF;
    opDataHead[4] = PLAY_SOUND;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
    
    // send the data
    sendData((char *)&leftSnd[0], sampleCnt * sizeof(float));
    sendData((char *)&rightSnd[0], sampleCnt * sizeof(float));
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void stopSound()
@@ -625,8 +691,12 @@ void stopSound()
    // place the size and type into the data head array
    opDataHead[4] = STOP_SOUND;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void endTransmission()
@@ -636,8 +706,12 @@ void endTransmission()
    // place the size and type into the data head array
    opDataHead[4] = END_TRANSMISSION;
    
+   WaitForSingleObject(avecis_sendData_lock, INFINITE);
+   
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
+   
+   ReleaseSemaphore(avecis_sendData_lock, 1, NULL);
 }
 
 void receiveCallback(char *bytes, int byteCnt)
@@ -709,6 +783,8 @@ void receiveCallback(char *bytes, int byteCnt)
 
 int avecisConnect(char *hostname, int port)
 {
+   avecis_sendData_lock = CreateSemaphore(NULL, 1, 1, NULL);
+   
    if (iniSendReceiveClient(hostname, port))
    return 1;
    
@@ -725,6 +801,7 @@ void blockAvecisDisconnect()
 void unblockAvecisDisconnect()
 {
    // blockAvecisDisconnect() must be called first
+   CloseHandle(avecis_sendData_lock);
    endSendReceiveClient();
 }
 
@@ -733,6 +810,7 @@ void unblockAvecisDisconnect()
 // unblockAvecisDisconnect() is used
 void avecisDisconnect()
 {
+   CloseHandle(avecis_sendData_lock);
    closeDataReceiver();
    endTransmission();
    waitUntilReceiverEnd();
