@@ -7,7 +7,6 @@
 
 #define TRUE 1
 #define FALSE 0
-#define CONNECTION_ESTABLISHED 17
 
 
 SOCKET ListenSocket = INVALID_SOCKET;
@@ -32,14 +31,8 @@ void receiveData(void *port_addr)
          if (iniServer(port, &ListenSocket, &ClientSocket))
          _endthread();
          
-         // the initial 4 bytes represent a data size variable used by receiveCallback()
-         // no data is needed for the connection established message
-         recvBuff[0] = 0;
-         recvBuff[1] = 0;
-         recvBuff[2] = 0;
-         recvBuff[3] = 0;
-         recvBuff[4] = CONNECTION_ESTABLISHED;
-         receiveCallback(&recvBuff[0], 5);
+         connection_status = CONNECTION_ESTABLISHED;
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)0, (LPARAM)0);
          
          initializeServer = FALSE;
       }
@@ -59,6 +52,9 @@ void receiveData(void *port_addr)
       {
          initializeServer = TRUE;
          endServer(ListenSocket, ClientSocket);
+         
+         connection_status = CONNECTION_UNESTABLISHED;
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)0, (LPARAM)0);
       }
    }
    
@@ -85,6 +81,7 @@ int iniSendReceiveServer(char *port)
    void *port_addr;
    
    port_addr = port;
+   connection_status = CONNECTION_UNESTABLISHED;
    
    closeDataReceiver = FALSE;
    receiveData_Thread = (HANDLE)_beginthread(receiveData, 0, port_addr);

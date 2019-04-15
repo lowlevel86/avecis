@@ -118,6 +118,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
    static int mainWinWdth, mainWinHght;
    static int mainWinInsideWinWdthDiff;
    static int mainWinInsideWinHghtDiff;
+   static int read_connect_status = TRUE;
    
 
    if (WM_CREATE == message)
@@ -214,7 +215,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
    {
       #define SHOW_CONTENT 13
       #define PRINT_STATUS 14
-      #define CONNECTION_ESTABLISHED 17
       #define END_TRANSMISSION 0xFF
       
       if (wParam == SHOW_CONTENT)
@@ -223,14 +223,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       if (wParam == PRINT_STATUS)
       SendMessage(hwndStatus, SB_SETTEXT, (WPARAM)0, lParam);
       
-      if (wParam == CONNECTION_ESTABLISHED)
+      if (read_connect_status)
+      if (connection_status == CONNECTION_ESTABLISHED)
       {
          if (argL.allow_popup)
          {
             ShowWindow(hwnd, SW_MINIMIZE);
             ShowWindow(hwnd, SW_RESTORE);
          }
+         
+         read_connect_status = FALSE;
       }
+      
+      if (connection_status == CONNECTION_UNESTABLISHED)
+      read_connect_status = TRUE;
       
       if (wParam == END_TRANSMISSION)
       {
