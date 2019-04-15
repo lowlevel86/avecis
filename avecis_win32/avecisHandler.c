@@ -160,7 +160,7 @@ void receiveCallback(char *bytes, int byteCnt)
       
       if (opType == SHOW_CONTENT)
       {
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)SHOW_CONTENT, (LPARAM)0);
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)SHOW_CONTENT, (LPARAM)0);
          
          // reset variables
          opDataSz = 0;
@@ -190,7 +190,7 @@ void receiveCallback(char *bytes, int byteCnt)
       
       if (opType == END_TRANSMISSION)
       {
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
          
          // reset variables
          opDataSz = 0;
@@ -622,7 +622,7 @@ void receiveCallback(char *bytes, int byteCnt)
          
          textData[i] = 0;
          
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)PRINT_STATUS, (LPARAM)&textData[0]);
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)PRINT_STATUS, (LPARAM)&textData[0]);
          
          // reset variables
          opDataSz = 0;
