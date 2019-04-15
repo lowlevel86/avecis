@@ -31,8 +31,7 @@ void receiveData(void *port_addr)
          if (iniServer(port, &ListenSocket, &ClientSocket))
          _endthread();
          
-         connection_status = CONNECTION_ESTABLISHED;
-         SendMessage(winHwnd_glob, WM_USER, (WPARAM)0, (LPARAM)0);
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
          
          initializeServer = FALSE;
       }
@@ -52,9 +51,6 @@ void receiveData(void *port_addr)
       {
          initializeServer = TRUE;
          endServer(ListenSocket, ClientSocket);
-         
-         connection_status = CONNECTION_UNESTABLISHED;
-         SendMessage(winHwnd_glob, WM_USER, (WPARAM)0, (LPARAM)0);
       }
    }
    
@@ -81,7 +77,6 @@ int iniSendReceiveServer(char *port)
    void *port_addr;
    
    port_addr = port;
-   connection_status = CONNECTION_UNESTABLISHED;
    
    closeDataReceiver = FALSE;
    receiveData_Thread = (HANDLE)_beginthread(receiveData, 0, port_addr);
