@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdio.h>
-
+#include <float.h>
 
 struct rendrInfo
 {
@@ -20,13 +20,13 @@ struct rendrInfo
 typedef struct rendrInfo RENDRINFO;
 
 
-int colorTransparency(int mainColor, int bgColor, float transAmt)
+int colorTransparency(int mainColor, int bgColor, float transp)
 {
    int r, g, b;
    
-   r = transAmt * ((bgColor & 0xFF) - (mainColor & 0xFF)) + (mainColor & 0xFF);
-   g = transAmt * (((bgColor & 0xFF00) >> 8) - ((mainColor & 0xFF00) >> 8)) + ((mainColor & 0xFF00) >> 8);
-   b = transAmt * (((bgColor & 0xFF0000) >> 16) - ((mainColor & 0xFF0000) >> 16)) + ((mainColor & 0xFF0000) >> 16);
+   r = transp * ((bgColor & 0xFF) - (mainColor & 0xFF)) + (mainColor & 0xFF);
+   g = transp * (((bgColor & 0xFF00) >> 8) - ((mainColor & 0xFF00) >> 8)) + ((mainColor & 0xFF00) >> 8);
+   b = transp * (((bgColor & 0xFF0000) >> 16) - ((mainColor & 0xFF0000) >> 16)) + ((mainColor & 0xFF0000) >> 16);
    
    mainColor = (int)b<<16 | (int)g<<8 | (int)r;
    
@@ -78,6 +78,7 @@ void aPix(float x1, float y1, float z, int color, struct rendrInfo rI)
    rI.scrnBuff[x][y] = colorTransparency(color, rI.scrnBuff[x][y], transparence);
 }
 
+
 void aLine(float xA, float yA, float zA,
            float xB, float yB, float zB, int color, struct rendrInfo rI)
 {
@@ -86,6 +87,8 @@ void aLine(float xA, float yA, float zA,
    float perspctvA, perspctvB;
    float xAB, yAB, zAB;
 
+   if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
+   return;
    if ((zA > rI.camLenZ) && (zB > rI.camLenZ))
    return;
    if ((zA < rI.camEndZ) && (zB < rI.camEndZ))
@@ -121,7 +124,7 @@ void aLine(float xA, float yA, float zA,
    {
       perspctvA = rI.perspctv / (rI.perspctv - zA);
       perspctvB = rI.perspctv / (rI.perspctv - zB);
-
+      
       xA = xA * perspctvA;
       yA = yA * perspctvA;
       zA = zA * perspctvA;
@@ -191,10 +194,13 @@ void aLine(float xA, float yA, float zA,
    else
    length = fabs(round(yB) - round(yA));
    
+   if (xA != xB)
    xAB = (xB - xA) / length;
+   if (yA != yB)
    yAB = (yB - yA) / length;
+   if (zA != zB)
    zAB = (zB - zA) / length;
-
+   
    for (i = 0; i <= length; i++)
    {
       x = xAB * i + xA;
@@ -211,15 +217,18 @@ void aLine(float xA, float yA, float zA,
    }
 }
 
+
 void afLine(float xA, float yA, float zA,
             float xB, float yB, float zB, int color, int fogColor, struct rendrInfo rI)
 {
 	int i, length;
-   float x, y, z, transAmt;
-   float fogBgnZ, fogEndZ, fogAmt;
+   float x, y, z, zCoor;
+   float fogBgnZ_persp, fogEndZ_persp, fogDensity;
    float perspctvA, perspctvB;
    float xAB, yAB, zAB;
 
+   if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
+   return;
    if ((zA > rI.camLenZ) && (zB > rI.camLenZ))
    return;
    if ((zA < rI.camEndZ) && (zB < rI.camEndZ))
@@ -325,17 +334,26 @@ void afLine(float xA, float yA, float zA,
    else
    length = fabs(round(yB) - round(yA));
    
+   if (xA != xB)
    xAB = (xB - xA) / length;
+   if (yA != yB)
    yAB = (yB - yA) / length;
+   if (zA != zB)
    zAB = (zB - zA) / length;
-
+   
+   // calculate the fog given the perspective
    if (!rI.ortho)
    {
-      fogBgnZ = (rI.fogBgnZ * (rI.perspctv / (rI.perspctv - rI.fogBgnZ)));
-      fogEndZ = (rI.fogEndZ * (rI.perspctv / (rI.perspctv - rI.fogEndZ)));
+      if (rI.fogBgnZ >= rI.perspctv)
+      fogBgnZ_persp = FLT_MAX;
+      else
+      fogBgnZ_persp = rI.fogBgnZ * (rI.perspctv / (rI.perspctv - rI.fogBgnZ));
+      
+      if (rI.fogEndZ >= rI.perspctv)
+      fogEndZ_persp = FLT_MAX;
+      else
+      fogEndZ_persp = rI.fogEndZ * (rI.perspctv / (rI.perspctv - rI.fogEndZ));
    }
-   
-   fogAmt = fogEndZ - fogBgnZ;
    
    for (i = 0; i <= length; i++)
    {
@@ -343,18 +361,42 @@ void afLine(float xA, float yA, float zA,
       y = yAB * i + yA;
       z = zAB * i + zA;
       
-      transAmt = (z - fogBgnZ) / fogAmt;
-      if (z > fogBgnZ)
-      transAmt = 0;
-      if (z <= fogEndZ)
-      transAmt = 1;
+      // calculate fog per point
+      if (!rI.ortho)
+      {
+         zCoor = (rI.perspctv * z) / (rI.perspctv + z); // undo perspective
+         
+         if (rI.fogBgnZ <= rI.fogEndZ)
+         fogDensity = 0.0;
+         else
+         fogDensity = (rI.fogBgnZ - zCoor) / (rI.fogBgnZ - rI.fogEndZ);
+         
+         if (z >= fogBgnZ_persp)
+         fogDensity = 0.0;
+         
+         if (z <= fogEndZ_persp)
+         fogDensity = 1.0;
+      }
+      else
+      {
+         if (rI.fogBgnZ <= rI.fogEndZ)
+         fogDensity = 0.0;
+         else
+         fogDensity = (rI.fogBgnZ - z) / (rI.fogBgnZ - rI.fogEndZ);
+         
+         if (z >= rI.fogBgnZ)
+         fogDensity = 0.0;
+         
+         if (z <= rI.fogEndZ)
+         fogDensity = 1.0;
+      }
       
       if ((round(x) >= 0) && (round(x) < rI.xWin) &&
           (round(y) >= 0) && (round(y) < rI.yWin))
       if (z > rI.zIndex[(int)round(x)][(int)round(y)])
       {
          rI.zIndex[(int)round(x)][(int)round(y)] = z;
-         aPix(x, y, z, colorTransparency(color, fogColor, transAmt), rI);
+         aPix(x, y, z, colorTransparency(color, fogColor, fogDensity), rI);
       }
    }
 }
@@ -368,6 +410,8 @@ void line(float xA, float yA, float zA,
    float perspctvA, perspctvB;
    float xAB, yAB, zAB;
 
+   if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
+   return;
    if ((zA > rI.camLenZ) && (zB > rI.camLenZ))
    return;
    if ((zA < rI.camEndZ) && (zB < rI.camEndZ))
@@ -473,10 +517,13 @@ void line(float xA, float yA, float zA,
    else
    length = fabs(round(yB) - round(yA));
    
+   if (xA != xB)
    xAB = (xB - xA) / length;
+   if (yA != yB)
    yAB = (yB - yA) / length;
+   if (zA != zB)
    zAB = (zB - zA) / length;
-
+   
    for (i = 0; i <= length; i++)
    {
       x = round(xAB * i + xA);
@@ -493,16 +540,19 @@ void line(float xA, float yA, float zA,
    }
 }
 
+
 void fLine(float xA, float yA, float zA,
            float xB, float yB, float zB,
            int color, int fogColor, struct rendrInfo rI)
 {
    int i, length, x, y;
-   float z, transAmt;
-   float fogBgnZ, fogEndZ, fogAmt;
+   float z, fogDensity, zCoor;
+   float fogBgnZ_persp, fogEndZ_persp;
    float perspctvA, perspctvB;
-   float xAB, yAB, zAB;
+   float xAB = 0, yAB = 0, zAB = 0;
    
+   if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
+   return;
    if ((zA > rI.camLenZ) && (zB > rI.camLenZ))
    return;
    if ((zA < rI.camEndZ) && (zB < rI.camEndZ))
@@ -608,17 +658,26 @@ void fLine(float xA, float yA, float zA,
    else
    length = fabs(round(yB) - round(yA));
    
+   if (xA != xB)
    xAB = (xB - xA) / length;
+   if (yA != yB)
    yAB = (yB - yA) / length;
+   if (zA != zB)
    zAB = (zB - zA) / length;
-
+   
+   // calculate the fog given the perspective
    if (!rI.ortho)
    {
-      fogBgnZ = (rI.fogBgnZ * (rI.perspctv / (rI.perspctv - rI.fogBgnZ)));
-      fogEndZ = (rI.fogEndZ * (rI.perspctv / (rI.perspctv - rI.fogEndZ)));
+      if (rI.fogBgnZ >= rI.perspctv)
+      fogBgnZ_persp = FLT_MAX;
+      else
+      fogBgnZ_persp = rI.fogBgnZ * (rI.perspctv / (rI.perspctv - rI.fogBgnZ));
+      
+      if (rI.fogEndZ >= rI.perspctv)
+      fogEndZ_persp = FLT_MAX;
+      else
+      fogEndZ_persp = rI.fogEndZ * (rI.perspctv / (rI.perspctv - rI.fogEndZ));
    }
-   
-   fogAmt = fogEndZ - fogBgnZ;
    
    for (i = 0; i <= length; i++)
    {
@@ -626,17 +685,40 @@ void fLine(float xA, float yA, float zA,
       y = round(yAB * i + yA);
       z = zAB * i + zA;
       
-      transAmt = (z - fogBgnZ) / fogAmt;
-      if (z > fogBgnZ)
-      transAmt = 0;
-      if (z <= fogEndZ)
-      transAmt = 1;
+      // calculate fog per pixel
+      if (!rI.ortho)
+      {
+         zCoor = (rI.perspctv * z) / (rI.perspctv + z); // undo perspective
+         
+         if (rI.fogBgnZ <= rI.fogEndZ)
+         fogDensity = 0.0;
+         else
+         fogDensity = (rI.fogBgnZ - zCoor) / (rI.fogBgnZ - rI.fogEndZ);
+         
+         if (z >= fogBgnZ_persp)
+         fogDensity = 0.0;
+         
+         if (z <= fogEndZ_persp)
+         fogDensity = 1.0;
+      }
+      else
+      {
+         if (rI.fogBgnZ <= rI.fogEndZ)
+         fogDensity = 0.0;
+         else
+         fogDensity = (rI.fogBgnZ - z) / (rI.fogBgnZ - rI.fogEndZ);
+         
+         if (z >= rI.fogBgnZ)
+         fogDensity = 0.0;
+         
+         if (z <= rI.fogEndZ)
+         fogDensity = 1.0;
+      }
       
-      if ((x >= 0) && (x < rI.xWin) &&
-          (y >= 0) && (y < rI.yWin))
+      if ((x >= 0) && (x < rI.xWin) && (y >= 0) && (y < rI.yWin))
       if (z >= rI.zIndex[x][y])
       {
-         rI.scrnBuff[x][y] = colorTransparency(color, fogColor, transAmt);
+         rI.scrnBuff[x][y] = colorTransparency(color, fogColor, fogDensity);
          rI.zIndex[x][y] = z;
       }
    }
