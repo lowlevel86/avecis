@@ -190,7 +190,7 @@ void receiveCallback(char *bytes, int byteCnt)
       
       if (opType == END_TRANSMISSION)
       {
-         SendMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
          
          // reset variables
          opDataSz = 0;
