@@ -85,7 +85,7 @@ void aLine(float xA, float yA, float zA,
 	int i, length;
    float x, y, z;
    float perspctvA, perspctvB;
-   float xAB, yAB, zAB;
+   float xAB = 0, yAB = 0, zAB = 0;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -225,7 +225,7 @@ void afLine(float xA, float yA, float zA,
    float x, y, z, zCoor;
    float fogBgnZ_persp, fogEndZ_persp, fogDensity;
    float perspctvA, perspctvB;
-   float xAB, yAB, zAB;
+   float xAB = 0, yAB = 0, zAB = 0;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -408,7 +408,7 @@ void line(float xA, float yA, float zA,
 	int i, length, x, y;
    float z;
    float perspctvA, perspctvB;
-   float xAB, yAB, zAB;
+   float xAB = 0, yAB = 0, zAB = 0;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
