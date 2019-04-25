@@ -139,11 +139,11 @@ void aLine(float xA, float yA, float zA,
    xB = xB + rI.xCenter;
    yB = yB + rI.yCenter;
 
-   if (xA < 0)
+   if (xA <= -1)
    {
-      zA = zB - (xB - 0) / (xB - xA) * (zB - zA);
-      yA = yB - (xB - 0) / (xB - xA) * (yB - yA);
-      xA = 0;
+      zA = zB - (xB - -1) / (xB - xA) * (zB - zA);
+      yA = yB - (xB - -1) / (xB - xA) * (yB - yA);
+      xA = -1;
    }
    if (xA >= rI.xWin)
    {
@@ -151,11 +151,11 @@ void aLine(float xA, float yA, float zA,
       yA = yB - (xB - rI.xWin) / (xB - xA) * (yB - yA);
       xA = rI.xWin;
    }
-   if (yA < 0)
+   if (yA <= -1)
    {
-      zA = zB - (yB - 0) / (yB - yA) * (zB - zA);
-      xA = xB - (yB - 0) / (yB - yA) * (xB - xA);
-      yA = 0;
+      zA = zB - (yB - -1) / (yB - yA) * (zB - zA);
+      xA = xB - (yB - -1) / (yB - yA) * (xB - xA);
+      yA = -1;
    }
    if (yA >= rI.yWin)
    {
@@ -164,11 +164,11 @@ void aLine(float xA, float yA, float zA,
       yA = rI.yWin;
    }
 
-   if (xB < 0)
+   if (xB <= -1)
    {
-      zB = zA - (xA - 0) / (xA - xB) * (zA - zB);
-      yB = yA - (xA - 0) / (xA - xB) * (yA - yB);
-      xB = 0;
+      zB = zA - (xA - -1) / (xA - xB) * (zA - zB);
+      yB = yA - (xA - -1) / (xA - xB) * (yA - yB);
+      xB = -1;
    }
    if (xB >= rI.xWin)
    {
@@ -176,11 +176,11 @@ void aLine(float xA, float yA, float zA,
       yB = yA - (xA - rI.xWin) / (xA - xB) * (yA - yB);
       xB = rI.xWin;
    }
-   if (yB < 0)
+   if (yB <= -1)
    {
-      zB = zA - (yA - 0) / (yA - yB) * (zA - zB);
-      xB = xA - (yA - 0) / (yA - yB) * (xA - xB);
-      yB = 0;
+      zB = zA - (yA - -1) / (yA - yB) * (zA - zB);
+      xB = xA - (yA - -1) / (yA - yB) * (xA - xB);
+      yB = -1;
    }
    if (yB >= rI.yWin)
    {
@@ -279,11 +279,11 @@ void afLine(float xA, float yA, float zA,
    xB = xB + rI.xCenter;
    yB = yB + rI.yCenter;
 
-   if (xA < 0)
+   if (xA <= -1)
    {
-      zA = zB - (xB - 0) / (xB - xA) * (zB - zA);
-      yA = yB - (xB - 0) / (xB - xA) * (yB - yA);
-      xA = 0;
+      zA = zB - (xB - -1) / (xB - xA) * (zB - zA);
+      yA = yB - (xB - -1) / (xB - xA) * (yB - yA);
+      xA = -1;
    }
    if (xA >= rI.xWin)
    {
@@ -291,11 +291,11 @@ void afLine(float xA, float yA, float zA,
       yA = yB - (xB - rI.xWin) / (xB - xA) * (yB - yA);
       xA = rI.xWin;
    }
-   if (yA < 0)
+   if (yA <= -1)
    {
-      zA = zB - (yB - 0) / (yB - yA) * (zB - zA);
-      xA = xB - (yB - 0) / (yB - yA) * (xB - xA);
-      yA = 0;
+      zA = zB - (yB - -1) / (yB - yA) * (zB - zA);
+      xA = xB - (yB - -1) / (yB - yA) * (xB - xA);
+      yA = -1;
    }
    if (yA >= rI.yWin)
    {
@@ -304,11 +304,11 @@ void afLine(float xA, float yA, float zA,
       yA = rI.yWin;
    }
 
-   if (xB < 0)
+   if (xB <= -1)
    {
-      zB = zA - (xA - 0) / (xA - xB) * (zA - zB);
-      yB = yA - (xA - 0) / (xA - xB) * (yA - yB);
-      xB = 0;
+      zB = zA - (xA - -1) / (xA - xB) * (zA - zB);
+      yB = yA - (xA - -1) / (xA - xB) * (yA - yB);
+      xB = -1;
    }
    if (xB >= rI.xWin)
    {
@@ -316,11 +316,11 @@ void afLine(float xA, float yA, float zA,
       yB = yA - (xA - rI.xWin) / (xA - xB) * (yA - yB);
       xB = rI.xWin;
    }
-   if (yB < 0)
+   if (yB <= -1)
    {
-      zB = zA - (yA - 0) / (yA - yB) * (zA - zB);
-      xB = xA - (yA - 0) / (yA - yB) * (xA - xB);
-      yB = 0;
+      zB = zA - (yA - -1) / (yA - yB) * (zA - zB);
+      xB = xA - (yA - -1) / (yA - yB) * (xA - xB);
+      yB = -1;
    }
    if (yB >= rI.yWin)
    {
@@ -462,11 +462,11 @@ void line(float xA, float yA, float zA,
    xB = xB + rI.xCenter;
    yB = yB + rI.yCenter;
 
-   if (xA < 0)
+   if (xA <= -1)
    {
-      zA = zB - (xB - 0) / (xB - xA) * (zB - zA);
-      yA = yB - (xB - 0) / (xB - xA) * (yB - yA);
-      xA = 0;
+      zA = zB - (xB - -1) / (xB - xA) * (zB - zA);
+      yA = yB - (xB - -1) / (xB - xA) * (yB - yA);
+      xA = -1;
    }
    if (xA >= rI.xWin)
    {
@@ -474,11 +474,11 @@ void line(float xA, float yA, float zA,
       yA = yB - (xB - rI.xWin) / (xB - xA) * (yB - yA);
       xA = rI.xWin;
    }
-   if (yA < 0)
+   if (yA <= -1)
    {
-      zA = zB - (yB - 0) / (yB - yA) * (zB - zA);
-      xA = xB - (yB - 0) / (yB - yA) * (xB - xA);
-      yA = 0;
+      zA = zB - (yB - -1) / (yB - yA) * (zB - zA);
+      xA = xB - (yB - -1) / (yB - yA) * (xB - xA);
+      yA = -1;
    }
    if (yA >= rI.yWin)
    {
@@ -487,11 +487,11 @@ void line(float xA, float yA, float zA,
       yA = rI.yWin;
    }
 
-   if (xB < 0)
+   if (xB <= -1)
    {
-      zB = zA - (xA - 0) / (xA - xB) * (zA - zB);
-      yB = yA - (xA - 0) / (xA - xB) * (yA - yB);
-      xB = 0;
+      zB = zA - (xA - -1) / (xA - xB) * (zA - zB);
+      yB = yA - (xA - -1) / (xA - xB) * (yA - yB);
+      xB = -1;
    }
    if (xB >= rI.xWin)
    {
@@ -499,11 +499,11 @@ void line(float xA, float yA, float zA,
       yB = yA - (xA - rI.xWin) / (xA - xB) * (yA - yB);
       xB = rI.xWin;
    }
-   if (yB < 0)
+   if (yB <= -1)
    {
-      zB = zA - (yA - 0) / (yA - yB) * (zA - zB);
-      xB = xA - (yA - 0) / (yA - yB) * (xA - xB);
-      yB = 0;
+      zB = zA - (yA - -1) / (yA - yB) * (zA - zB);
+      xB = xA - (yA - -1) / (yA - yB) * (xA - xB);
+      yB = -1;
    }
    if (yB >= rI.yWin)
    {
@@ -530,8 +530,7 @@ void line(float xA, float yA, float zA,
       y = round(yAB * i + yA);
       z = zAB * i + zA;
       
-      if ((x >= 0) && (x < rI.xWin) &&
-          (y >= 0) && (y < rI.yWin))
+      if ((x >= 0) && (x < rI.xWin) && (y >= 0) && (y < rI.yWin))
       if (z >= rI.zIndex[x][y])
       {
          rI.scrnBuff[x][y] = color;
@@ -603,11 +602,11 @@ void fLine(float xA, float yA, float zA,
    xB = xB + rI.xCenter;
    yB = yB + rI.yCenter;
 
-   if (xA < 0)
+   if (xA <= -1)
    {
-      zA = zB - (xB - 0) / (xB - xA) * (zB - zA);
-      yA = yB - (xB - 0) / (xB - xA) * (yB - yA);
-      xA = 0;
+      zA = zB - (xB - -1) / (xB - xA) * (zB - zA);
+      yA = yB - (xB - -1) / (xB - xA) * (yB - yA);
+      xA = -1;
    }
    if (xA >= rI.xWin)
    {
@@ -615,11 +614,11 @@ void fLine(float xA, float yA, float zA,
       yA = yB - (xB - rI.xWin) / (xB - xA) * (yB - yA);
       xA = rI.xWin;
    }
-   if (yA < 0)
+   if (yA <= -1)
    {
-      zA = zB - (yB - 0) / (yB - yA) * (zB - zA);
-      xA = xB - (yB - 0) / (yB - yA) * (xB - xA);
-      yA = 0;
+      zA = zB - (yB - -1) / (yB - yA) * (zB - zA);
+      xA = xB - (yB - -1) / (yB - yA) * (xB - xA);
+      yA = -1;
    }
    if (yA >= rI.yWin)
    {
@@ -628,11 +627,11 @@ void fLine(float xA, float yA, float zA,
       yA = rI.yWin;
    }
 
-   if (xB < 0)
+   if (xB <= -1)
    {
-      zB = zA - (xA - 0) / (xA - xB) * (zA - zB);
-      yB = yA - (xA - 0) / (xA - xB) * (yA - yB);
-      xB = 0;
+      zB = zA - (xA - -1) / (xA - xB) * (zA - zB);
+      yB = yA - (xA - -1) / (xA - xB) * (yA - yB);
+      xB = -1;
    }
    if (xB >= rI.xWin)
    {
@@ -640,11 +639,11 @@ void fLine(float xA, float yA, float zA,
       yB = yA - (xA - rI.xWin) / (xA - xB) * (yA - yB);
       xB = rI.xWin;
    }
-   if (yB < 0)
+   if (yB <= -1)
    {
-      zB = zA - (yA - 0) / (yA - yB) * (zA - zB);
-      xB = xA - (yA - 0) / (yA - yB) * (xA - xB);
-      yB = 0;
+      zB = zA - (yA - -1) / (yA - yB) * (zA - zB);
+      xB = xA - (yA - -1) / (yA - yB) * (xA - xB);
+      yB = -1;
    }
    if (yB >= rI.yWin)
    {
