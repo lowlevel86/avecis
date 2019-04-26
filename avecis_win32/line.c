@@ -207,8 +207,8 @@ void aLine(float xA, float yA, float zA,
       y = yAB * i + yA;
       z = zAB * i + zA;
       
-      if ((round(x) >= 0) && (round(x) < rI.xWin) &&
-          (round(y) >= 0) && (round(y) < rI.yWin))
+      if ((round(x) > 0) && (round(x) < rI.xWin) &&
+          (round(y) > 0) && (round(y) < rI.yWin))
       if (z > rI.zIndex[(int)round(x)][(int)round(y)])
       {
          rI.zIndex[(int)round(x)][(int)round(y)] = z;
@@ -391,8 +391,8 @@ void afLine(float xA, float yA, float zA,
          fogDensity = 1.0;
       }
       
-      if ((round(x) >= 0) && (round(x) < rI.xWin) &&
-          (round(y) >= 0) && (round(y) < rI.yWin))
+      if ((round(x) > 0) && (round(x) < rI.xWin) &&
+          (round(y) > 0) && (round(y) < rI.yWin))
       if (z > rI.zIndex[(int)round(x)][(int)round(y)])
       {
          rI.zIndex[(int)round(x)][(int)round(y)] = z;
