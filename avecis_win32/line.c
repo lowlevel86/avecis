@@ -85,7 +85,7 @@ void aLine(float xA, float yA, float zA,
 	int i, length;
    float x, y, z;
    float perspctvA, perspctvB;
-   float xAB = 0, yAB = 0, zAB = 0;
+   float xAB, yAB, zAB;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -193,6 +193,10 @@ void aLine(float xA, float yA, float zA,
    length = fabs(round(xB) - round(xA));
    else
    length = fabs(round(yB) - round(yA));
+   
+   xAB = 0;
+   yAB = 0;
+   zAB = 0;
    
    if (xA != xB)
    xAB = (xB - xA) / length;
@@ -225,7 +229,7 @@ void afLine(float xA, float yA, float zA,
    float x, y, z, zCoor;
    float fogBgnZ_persp, fogEndZ_persp, fogDensity;
    float perspctvA, perspctvB;
-   float xAB = 0, yAB = 0, zAB = 0;
+   float xAB, yAB, zAB;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -333,6 +337,10 @@ void afLine(float xA, float yA, float zA,
    length = fabs(round(xB) - round(xA));
    else
    length = fabs(round(yB) - round(yA));
+   
+   xAB = 0;
+   yAB = 0;
+   zAB = 0;
    
    if (xA != xB)
    xAB = (xB - xA) / length;
@@ -408,7 +416,7 @@ void line(float xA, float yA, float zA,
 	int i, length, x, y;
    float z;
    float perspctvA, perspctvB;
-   float xAB = 0, yAB = 0, zAB = 0;
+   float xAB, yAB, zAB;
 
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -511,11 +519,20 @@ void line(float xA, float yA, float zA,
       xB = xA - (yA - rI.yWin) / (yA - yB) * (xA - xB);
       yB = rI.yWin;
    }
-
-   if (fabs(round(xB) - round(xA)) > fabs(round(yB) - round(yA)))
-   length = fabs(round(xB) - round(xA));
+   
+   xA = round(xA);
+   yA = round(yA);
+   xB = round(xB);
+   yB = round(yB);
+   
+   if (fabs(xB - xA) > fabs(yB - yA))
+   length = fabs(xB - xA);
    else
-   length = fabs(round(yB) - round(yA));
+   length = fabs(yB - yA);
+   
+   xAB = 0;
+   yAB = 0;
+   zAB = 0;
    
    if (xA != xB)
    xAB = (xB - xA) / length;
@@ -548,7 +565,7 @@ void fLine(float xA, float yA, float zA,
    float z, fogDensity, zCoor;
    float fogBgnZ_persp, fogEndZ_persp;
    float perspctvA, perspctvB;
-   float xAB = 0, yAB = 0, zAB = 0;
+   float xAB, yAB, zAB;
    
    if ((rI.perspctv <= rI.camLenZ) && (!rI.ortho))
    return;
@@ -652,10 +669,19 @@ void fLine(float xA, float yA, float zA,
       yB = rI.yWin;
    }
 
-   if (fabs(round(xB) - round(xA)) > fabs(round(yB) - round(yA)))
-   length = fabs(round(xB) - round(xA));
+   xA = round(xA);
+   yA = round(yA);
+   xB = round(xB);
+   yB = round(yB);
+   
+   if (fabs(xB - xA) > fabs(yB - yA))
+   length = fabs(xB - xA);
    else
-   length = fabs(round(yB) - round(yA));
+   length = fabs(yB - yA);
+   
+   xAB = 0;
+   yAB = 0;
+   zAB = 0;
    
    if (xA != xB)
    xAB = (xB - xA) / length;
