@@ -100,9 +100,9 @@ def drawButton(btn, rv):
       
       for pth in range(0, len(asciiPaths[ch])):
          if btn.down == False: # if button is not down
-            drawPath(move(scale(move(asciiPaths[ch][pth], chrLoc+1.5, 1.0, 0.0), chSz, chSz, chSz), btn.x+1.0, btn.y+1.0, topMost+2.0))
+            drawPath(move(scale(move(asciiPaths[ch][pth], chrLoc+1.4, 1.0, 0.0), chSz, chSz, chSz), btn.x+1.0, btn.y+1.0, topMost+2.0))
          else:
-            drawPath(move(scale(move(asciiPaths[ch][pth], chrLoc+1.5, 1.0, 0.0), chSz, chSz, chSz), btn.x-1.0, btn.y-1.0, topMost))
+            drawPath(move(scale(move(asciiPaths[ch][pth], chrLoc+1.4, 1.0, 0.0), chSz, chSz, chSz), btn.x-1.0, btn.y-1.0, topMost))
                
       
       chrLoc += 1

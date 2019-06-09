@@ -1,11 +1,7 @@
 import math
 
 '''
-sequcrot.py
-sequcrot stands for sequence unit circle rotation
-
 this code contains functions for rotating objects using unit circle coordinates
-
 a specific rotation sequence (x, y, then z) is used to represent an object's orientation
 '''
 
@@ -69,11 +65,10 @@ def ucRotUc(UC_A, UC_B):
    xPt_X_AXIS = 1.0; yPt_X_AXIS = 0.0; zPt_X_AXIS = 0.0
    xPt_Y_AXIS = 0.0; yPt_Y_AXIS = 1.0; zPt_Y_AXIS = 0.0
 
-   # rotate a dual-axis object using the first xyz unit circle coordinates
+   # rotate a dual-axis object using the unit circle coordinates
    xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS = ucRotVertex(UC_B, xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS)
    xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS = ucRotVertex(UC_B, xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS)
 
-   # rotate the dual-axis object again using the second xyz unit circle coordinates
    xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS = ucRotVertex(UC_A, xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS)
    xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS = ucRotVertex(UC_A, xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS)
 
@@ -127,11 +122,11 @@ def ucRotUcUNDO(UC_A, UC_B):
    xPt_X_AXIS = 1.0; yPt_X_AXIS = 0.0; zPt_X_AXIS = 0.0
    xPt_Y_AXIS = 0.0; yPt_Y_AXIS = 1.0; zPt_Y_AXIS = 0.0
 
-   # rotate a dual-axis object using the first xyz unit circle coordinates
+   # rotate a dual-axis object using the unit circle coordinates
    xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS = ucRotVertex(UC_B, xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS)
    xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS = ucRotVertex(UC_B, xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS)
 
-   # rotate the dual-axis object again using the second xyz unit circle coordinates
+   # reverse
    xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS = ucRotVertexUNDO(UC_A, xPt_X_AXIS, yPt_X_AXIS, zPt_X_AXIS)
    xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS = ucRotVertexUNDO(UC_A, xPt_Y_AXIS, yPt_Y_AXIS, zPt_Y_AXIS)
 
@@ -195,7 +190,7 @@ def vecRotVertex(x, y, xPt, yPt, zPt):
    # rotate the amount of length
    hUc = math.cos(length * (math.pi * 2.0 / 360.0))
    vUc = math.sin(length * (math.pi * 2.0 / 360.0))
-   xPt, zPt = ucRot(xPt, zPt, hUc, vUc) # y-axis rotation
+   xPt, zPt = ucRot(hUc, vUc, xPt, zPt) # y-axis rotation
    
    # rotate back from the x-axis
    xPt, yPt = ucRot(xUc, yUc, xPt, yPt) # z-axis rotation

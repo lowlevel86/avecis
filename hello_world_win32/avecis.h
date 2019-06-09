@@ -631,9 +631,9 @@ void printSB(char *fmtStr, ...)
    
    va_start(arg, fmtStr);
    
-   size = snprintf(NULL, 0, fmtStr, arg) + 1;
+   size = vsnprintf(NULL, 0, fmtStr, arg) + 1;
    buff = malloc(size);
-   vsprintf(buff, fmtStr, arg);
+   vsnprintf(buff, size, fmtStr, arg);
    
    va_end(arg);
    

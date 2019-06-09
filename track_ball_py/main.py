@@ -2,7 +2,7 @@ import math
 import time
 from avecis import *
 from shapes import *
-from sequcrot import *
+from ucrot import *
 from vector_ascii import *
 from controls import *
 
@@ -113,7 +113,6 @@ def drawScreen():
 
 
 def eventCallback(evType, keyCode, xM, yM):
-   global lMouseDwn
    global mMouseDwn
    global rMouseDwn
    global xMouse
@@ -134,11 +133,9 @@ def eventCallback(evType, keyCode, xM, yM):
       yMouse = -yM - -win_height/2.0
 
    if evType == L_MOUSE_DOWN:
-      lMouseDwn = True
       updateGraphics = True
    
    if evType == L_MOUSE_UP:
-      lMouseDwn = False
       updateGraphics = True
 
    if evType == M_MOUSE_DOWN:
@@ -175,30 +172,25 @@ def eventCallback(evType, keyCode, xM, yM):
 
    if moveSlider(rc.fog_start_sl, evType, xMouse, yMouse):
       rv.fogStart = getSliderValue(rc.fog_start_sl)
-      printSB(("Fog starts at %.2f." % getSliderValue(rc.fog_start_sl)))
       updateGraphics = True
 
    if moveSlider(rc.fog_end_sl, evType, xMouse, yMouse):
       rv.fogEnd = getSliderValue(rc.fog_end_sl)
-      printSB(("Fog ends at %.2f." % getSliderValue(rc.fog_end_sl)))
       updateGraphics = True
 
    if moveSlider(rc.perspective_sl, evType, xMouse, yMouse):
       rv.perspective = getSliderValue(rc.perspective_sl)
       setPerspective(rv.perspective)
-      printSB(("Perspective: %.2f (must be greater than view start)" % getSliderValue(rc.perspective_sl)))
       updateGraphics = True
 
    if moveSlider(rc.view_start_sl, evType, xMouse, yMouse):
       rv.viewStart = getSliderValue(rc.view_start_sl)
       viewStart(rv.viewStart)
-      printSB(("View starts at %.2f." % getSliderValue(rc.view_start_sl)))
       updateGraphics = True
 
    if moveSlider(rc.view_end_sl, evType, xMouse, yMouse):
       rv.viewEnd = getSliderValue(rc.view_end_sl)
       viewEnd(rv.viewEnd)
-      printSB(("View ends at %.2f." % getSliderValue(rc.view_end_sl)))
       updateGraphics = True
 
    if rMouseDwn or mMouseDwn:
@@ -259,7 +251,6 @@ def Main():
    global msec
    global msec_prior
    
-   global lMouseDwn
    global mMouseDwn
    global rMouseDwn
    global xMouse
@@ -277,7 +268,6 @@ def Main():
    msec_prior = 0
    
    # initialize navigation variables
-   lMouseDwn = False
    mMouseDwn = False
    rMouseDwn = False
    xMouse = 0

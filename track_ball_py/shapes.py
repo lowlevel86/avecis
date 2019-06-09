@@ -5,20 +5,20 @@ def genGrid(res):
    
    grid = []
    
-   for i in range(0, res):
+   for i in range(0, res+1):
 
-      grid.append(i/(res-1.0) * 2.0 - 1.0)
+      grid.append(float(i)/res * 2.0 - 1.0)
       grid.append(1.0)
       grid.append(0.0)
-      grid.append(i/(res-1.0) * 2.0 - 1.0)
+      grid.append(float(i)/res * 2.0 - 1.0)
       grid.append(-1.0)
       grid.append(0.0)
    
       grid.append(1.0)
-      grid.append(i/(res-1.0) * 2.0 - 1.0)
+      grid.append(float(i)/res * 2.0 - 1.0)
       grid.append(0.0)
       grid.append(-1.0)
-      grid.append(i/(res-1.0) * 2.0 - 1.0)
+      grid.append(float(i)/res * 2.0 - 1.0)
       grid.append(0.0)
       
    return grid
@@ -155,9 +155,9 @@ def genTorus(hRings, vRings, tubeDiam):
       hUC = math.cos(j * (math.pi / (vRings/2.0)))
       vUC = math.sin(j * (math.pi / (vRings/2.0)))
 
-      xPt = math.cos((i) * (math.pi / (hRings/2.0))) * tubeDiam + holeSz
+      xPt = math.cos(0 * (math.pi / (hRings/2.0))) * tubeDiam + holeSz
       yPt = 0.0
-      zPt = math.sin((i) * (math.pi / (hRings/2.0))) * tubeDiam
+      zPt = math.sin(0 * (math.pi / (hRings/2.0))) * tubeDiam
       
       for i in range(1, hRings+1):
          
