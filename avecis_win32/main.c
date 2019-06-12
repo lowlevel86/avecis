@@ -23,10 +23,10 @@
 #define MOUSE_WHEEL_DOWN 10
 #define DISCONNECT_SIGNAL 0xFF
 
-char flags[9] = {'t', 'x', 'y', 'w', 'h', 'p', 'b', 's', 'u'};
-int argTypes[9] = {string_arg, int_arg, int_arg, int_arg,
-                   int_arg, string_arg, int_arg, int_arg, only_flag};
-int argCnt = 9;
+char flags[10] = {'t', 'x', 'y', 'w', 'h', 'p', 'b', 's', 'u', 'h'};
+int argTypes[10] = {string_arg, int_arg, int_arg, int_arg, int_arg,
+                    string_arg, int_arg, int_arg, only_flag, only_flag};
+int argCnt = 10;
 
 struct argumentList
 {
@@ -39,10 +39,32 @@ struct argumentList
    int sound_buffer_size;
    int samples_per_second;
    int allow_popup;
+   int display_help;
 };
 
 struct argumentList argL;
 
+char helpText[] ={"\
+avecis - is an audio, vector, input server.\n\
+ \n\
+Usage:\n\
+avecis [options]\n\
+ \n\
+Options:\n\
+-t [title], changes the window title; the default is 'avecis'\n\
+-x [x position], changes the x position; the default is 0\n\
+-y [y position], changes the y position; the default is 0\n\
+-w [width], changes the window width; the default is 640\n\
+-h [height], changes the window height; the default is 360\n\
+-p [port], changes the server port; the default is 27015\n\
+-b [buffer size], changes the audio buffer size; the default is 4096\n\
+-s [samples/sec], changes the audio sample rate; the default is 11025\n\
+-u, pops the window up each time a connection is made\n\
+-h, displays this message\n\
+ \n\
+Example usage:\n\
+avecis -t 'New Title' -w 400 -h 400 -p 27016 -u\n\
+"};
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -84,9 +106,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
    argL.sound_buffer_size = 4096;
    argL.samples_per_second = 11025;
    argL.allow_popup = FALSE;
+   argL.display_help = FALSE;
 
    getCmdLineArgs((char *)szCmdLine, flags, argTypes, argCnt, (void ***)&argL);
    
+   if (argL.display_help)
+   {
+      MessageBox(NULL, TEXT(helpText), TEXT("Help Info"), 0);
+      freeCmdLineArgs();
+      return 0;
+   }
    
    hwnd = CreateWindow(szAppName, TEXT(argL.title),
                        WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX,
