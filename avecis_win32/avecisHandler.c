@@ -28,7 +28,7 @@
 #define STOP_SOUND 16
 #define END_TRANSMISSION 0xFF
 
-char textData[1024] = {0};
+char textData[4096] = {0};
 
 
 void iniAvecisHandler(char *port, HWND winHwnd)
