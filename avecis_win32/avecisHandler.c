@@ -28,6 +28,9 @@
 #define STOP_SOUND 16
 #define END_TRANSMISSION 0xFF
 
+#define CONNECTION_ESTABLISHED 1
+
+HWND winHwnd_glob;
 char textData[4096] = {0};
 
 
@@ -51,7 +54,10 @@ void receiveCallback(char *bytes, int byteCnt)
    static char *opDataBuff;
    static int opDataBuffInc = 0;
    static int opType = UNKNOWN;
+   static int blockAllData = TRUE;
+   static char errorText[] = "DATA ERROR";
    
+   // init/reset avecis handler
    if (byteCnt == 0)
    {
       // reset variables
@@ -64,8 +70,14 @@ void receiveCallback(char *bytes, int byteCnt)
       
       opDataBuffInc = 0;
       
+      SendMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
+      blockAllData = FALSE;
+      
       return;
    }
+   
+   if (blockAllData)
+   return;
    
    while (TRUE)
    {
@@ -135,8 +147,22 @@ void receiveCallback(char *bytes, int byteCnt)
       if (opType != 0xFF)
       if ((opType < -1) || (opType > 17))
       {
-         printf("Avecis data error\n");
-         exit(EXIT_FAILURE);//exit immediately if error
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+         
+         blockAllData = TRUE;
+         
+         SendMessage(winHwnd_glob, WM_USER, (WPARAM)PRINT_STATUS, (LPARAM)&errorText[0]);
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
+         
+         return;
       }
       
       
@@ -190,8 +216,6 @@ void receiveCallback(char *bytes, int byteCnt)
       
       if (opType == END_TRANSMISSION)
       {
-         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
-         
          // reset variables
          opDataSz = 0;
          opDataSzBytesAcquired = 0;
@@ -201,6 +225,12 @@ void receiveCallback(char *bytes, int byteCnt)
          free(opDataBuff);
          
          opDataBuffInc = 0;
+         
+         blockAllData = TRUE;
+         
+         PostMessage(winHwnd_glob, WM_USER, (WPARAM)END_TRANSMISSION, (LPARAM)0);
+         
+         return;
       }
       
       ////////////////////////////////////////////////////////////

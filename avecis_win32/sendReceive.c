@@ -31,7 +31,8 @@ void receiveData(void *port_addr)
          if (iniServer(port, &ListenSocket, &ClientSocket))
          _endthread();
          
-         SendMessage(winHwnd_glob, WM_USER, (WPARAM)CONNECTION_ESTABLISHED, (LPARAM)0);
+         // init/reset
+         receiveCallback(&recvBuff[0], 0);
          
          initializeServer = FALSE;
       }
@@ -45,6 +46,7 @@ void receiveData(void *port_addr)
          _endthread();
       }
       
+      if (iResult > 0)
       receiveCallback(&recvBuff[0], iResult);
       
       if (iResult == 0)
