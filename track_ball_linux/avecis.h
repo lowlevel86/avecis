@@ -115,7 +115,8 @@
 #define KC_NP_MULTIPLY 0x6A
 #define KC_NP_PLUS 0x6B
 #define KC_NP_MINUS 0x6D
-#define KC_NP_DIVIDE 0x6F
+#define KC_NP_DECIMAL 0x6E
+#define KC_NP_DIVIDE 0x100006F
 
 #define KC_F1 0x70
 #define KC_F2 0x71
