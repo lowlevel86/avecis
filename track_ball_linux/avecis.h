@@ -58,8 +58,6 @@
 #define KC_INSERT 0x100002D
 #define KC_DELETE 0x100002E
 
-#define KC_NP_DECIMAL 0x2E
-
 #define KC_0 0x30
 #define KC_1 0x31
 #define KC_2 0x32
