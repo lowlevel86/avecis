@@ -625,6 +625,9 @@ void receiveCallback(char *bytes, int byteCnt)
          eventData |= ((int)bytes[byteInc] << 24) & 0xFF000000;
          byteInc++;
          
+         if (eventType == DISCONNECT_SIGNAL)
+         exit(-1);
+         
          if (eventType == MOUSE_MOVE)
          eventCallback(eventType, 0, eventData&0xFFFF, eventData>>16&0xFFFF);
          else
