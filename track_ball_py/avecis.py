@@ -211,7 +211,6 @@ def endSendReceiveClient():
 ######################### MAIN AVECIS FUNCTIONS #########################
 
 avecis_sendData_lock = threading.Lock()
-avecis_disconnect_blocked = 0
 
 def bToINT(ch):
    if sys.version_info < (3,):
@@ -426,7 +425,6 @@ def receiveCallback(bytes, byteCnt, eventCallback = None):
    global avecis_varsDataInc
    global avecis_eventType
    global avecis_eventData
-   global avecis_disconnect_blocked
    byteInc = 0
    avecis_varsDataInc = 0
    
@@ -473,10 +471,7 @@ def receiveCallback(bytes, byteCnt, eventCallback = None):
          byteInc += 1
          
          if avecis_eventType == 0xFF: # 0xFF = DISCONNECT_SIGNAL
-            if avecis_disconnect_blocked:
-               unblockAvecisDisconnect()
-            else:
-               avecisDisconnect()
+            exit()
          
          if avecis_eventType == 8: # 8 = MOUSE_MOVE
             eventCallback(avecis_eventType, 0, avecis_eventData&0xFFFF, avecis_eventData>>16&0xFFFF)
@@ -493,8 +488,6 @@ def avecisConnect(host, port, eventCallback = None):
 
 # this function is not to be used if avecisDisconnect() is used
 def blockAvecisDisconnect():
-   global avecis_disconnect_blocked
-   avecis_disconnect_blocked = 1
    waitUntilReceiverEnd()
 
 # this function is not to be used if avecisDisconnect() is used

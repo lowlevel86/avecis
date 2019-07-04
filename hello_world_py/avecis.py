@@ -470,6 +470,9 @@ def receiveCallback(bytes, byteCnt, eventCallback = None):
          avecis_eventData |= bToINT(bytes[byteInc]) << 24
          byteInc += 1
          
+         if avecis_eventType == 0xFF: # 0xFF = DISCONNECT_SIGNAL
+            exit()
+         
          if avecis_eventType == 8: # 8 = MOUSE_MOVE
             eventCallback(avecis_eventType, 0, avecis_eventData&0xFFFF, avecis_eventData>>16&0xFFFF)
          else:
