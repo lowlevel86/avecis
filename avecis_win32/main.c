@@ -92,9 +92,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
    wndclass.lpszMenuName = szAppName;
    wndclass.lpszClassName = szAppName;
 
-   if (!RegisterClass(&wndclass))
-   return 0;
-
    
    // default window settings
    argL.title = "Avecis";
@@ -117,6 +114,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
       return 0;
    }
    
+   
+   if (!RegisterClass(&wndclass))
+   return 0;
+
    hwnd = CreateWindow(szAppName, TEXT(argL.title),
                        WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX,
                        argL.window_x, argL.window_y,
