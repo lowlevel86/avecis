@@ -313,53 +313,47 @@ int setParams(snd_pcm_t *handle, snd_pcm_hw_params_t *params, snd_pcm_sw_params_
 }
 
 
-// wait for room in buffer using poll
-int wait_for_poll(snd_pcm_t *handle, struct pollfd *ufds, unsigned int count)
+int write_and_poll_loop(snd_pcm_t *handle, int sampRate, signed short *samples,
+                        snd_pcm_sframes_t period_size, struct pollfd *ufd)
 {
+   double t;
+   int tHalf;
+   int wait_for_poll = FALSE;
    unsigned short revents;
    
-   while (1)
-   {
-      poll(ufds, count, -1);
-      snd_pcm_poll_descriptors_revents(handle, ufds, count, &revents);
-      
-      if (revents & POLLERR)
-      return 1;
-      
-      if (revents & POLLOUT)
-      return 0;
-   }
-}
-
-
-int write_and_poll_loop(snd_pcm_t *handle, signed short *samples,
-                        snd_pcm_channel_area_t *areas, snd_pcm_sframes_t period_size,
-                        struct pollfd *ufds, unsigned int count)
-{
-   int init = TRUE;
-
+   // find the amount of time it takes to play an audio segment half
+   t = (double)period_size / sampRate;
+   t = t * 1000000; // convert to microseconds
+   tHalf = t / 2;
+   
    while (sound_buffers_active)
    {
-      if (!init)
-      {
-         if (wait_for_poll(handle, ufds, count))
-         return PLAYBACK_ERROR;
-      }
+      usleep(tHalf);
       
       loadNextSegment(samples);
       
-      if (bufferSpanInc <= bufferSpanCnt)
+      if (bufferSpanInc <= bufferSpanCnt)// don't increment if greater than bufferSpanCnt
       bufferSpanInc++;
       
       // send a signal if at the last buffer load
       if (bufferSpanInc == bufferSpanCnt)
       lastAudioSegmentEventCallback();
       
+      if (wait_for_poll)
+      {
+         // wait until buffer is ready roughly "tHalf"
+         poll(ufd, 1, -1);
+         snd_pcm_poll_descriptors_revents(handle, ufd, 1, &revents);
+         
+         if (revents & POLLERR)
+         return PLAYBACK_ERROR;
+      }
+      
       if (snd_pcm_writei(handle, samples, period_size) < 0)
       return PLAYBACK_ERROR;
       
       if (snd_pcm_state(handle) == SND_PCM_STATE_RUNNING)
-      init = FALSE;
+      wait_for_poll = TRUE;
    }
    
    return 0;
@@ -375,12 +369,10 @@ void closeSndBuffs()
 
 void *iniSndThread(void *iniSndVarsPtr)
 {
-   int i;
    snd_pcm_hw_params_t *hwparams;
    snd_pcm_sw_params_t *swparams;
-   snd_pcm_channel_area_t areas[2];
-   struct pollfd *ufds;
-   unsigned int count;
+   struct pollfd *ufd;
+   int ufd_allocated;
    snd_output_t *output = NULL;
    struct iniSndVars *sv;
    
@@ -394,7 +386,7 @@ void *iniSndThread(void *iniSndVarsPtr)
       if (snd_output_stdio_attach(&output, stdout, 0) < 0)
       return (void *)FAILED_TO_INITIALIZE_AUDIO;
       
-      if (snd_pcm_open(&handle, sv->device, SND_PCM_STREAM_PLAYBACK, 0) < 0)
+      if (snd_pcm_open(&handle, sv->device, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK) < 0)
       return (void *)FAILED_TO_INITIALIZE_AUDIO;
       else
       handle_valid = TRUE;
@@ -409,31 +401,23 @@ void *iniSndThread(void *iniSndVarsPtr)
       else
       sample_allocated = TRUE;
       
-      for (i = 0; i < 2; i++) // 2 channels
-      {
-         areas[i].addr = samples;
-         areas[i].first = i * snd_pcm_format_physical_width(SND_PCM_FORMAT_S16);
-         areas[i].step = snd_pcm_format_physical_width(SND_PCM_FORMAT_S16) * 2; // 2 channels
-      }
+      ufd = malloc(sizeof(struct pollfd));
       
-      // initialize for using poll
-      count = snd_pcm_poll_descriptors_count(handle);
+      if (ufd == NULL)
+      return (void *)FAILED_TO_INITIALIZE_AUDIO;
+      else
+      ufd_allocated = TRUE;
       
-      if (count <= 0)
+      if ((snd_pcm_poll_descriptors(handle, ufd, 1)) < 0)
       return (void *)FAILED_TO_INITIALIZE_AUDIO;
       
-      ufds = malloc(sizeof(struct pollfd) * count);
-      
-      if (ufds == NULL)
-      return (void *)FAILED_TO_INITIALIZE_AUDIO;
-      
-      if ((snd_pcm_poll_descriptors(handle, ufds, count)) < 0)
-      return (void *)FAILED_TO_INITIALIZE_AUDIO;
-      
-      write_and_poll_loop(handle, samples, areas, (snd_pcm_sframes_t)framesPerBuffer, ufds, count);
+      write_and_poll_loop(handle, sv->sampRate, samples, (snd_pcm_sframes_t)framesPerBuffer, ufd);
       
       if (sample_allocated)
       free(samples);
+      
+      if (ufd_allocated)
+      free(ufd);
       
       if (handle_valid)
       snd_pcm_close(handle);
