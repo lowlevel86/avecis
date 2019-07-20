@@ -1,2 +1,3 @@
-int iniServer(char *, SOCKET *, SOCKET *);
-void endServer(SOCKET, SOCKET);
+int iniServer(char *);
+int acceptClient(SOCKET *);
+void endServer(SOCKET);

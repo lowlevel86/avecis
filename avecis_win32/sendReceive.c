@@ -9,40 +9,26 @@
 #define FALSE 0
 
 
-SOCKET ListenSocket = INVALID_SOCKET;
 SOCKET ClientSocket = INVALID_SOCKET;
-int closeDataReceiver = FALSE;
+int await_client_connect;
+int receive_client_data;
+HANDLE awaitClientConnection_Thread = NULL;
 HANDLE receiveData_Thread = NULL;
 
 
-void receiveData(void *port_addr)
+void receiveData()
 {
    int iResult;
    char recvBuff[4096];
-   char *port;
-   int initializeServer = TRUE;
    
-   port = port_addr;
-   
-   while (closeDataReceiver == FALSE)
+   while (receive_client_data)
    {
-      if (initializeServer)
-      {
-         if (iniServer(port, &ListenSocket, &ClientSocket))
-         _endthread();
-         
-         // init/reset
-         receiveCallback(&recvBuff[0], 0);
-         
-         initializeServer = FALSE;
-      }
-      
       iResult = recv(ClientSocket, (char *)&recvBuff[0], 4096, 0);
       
       if (iResult < 0)
       {
          printf("recv failed with error: %d\n", WSAGetLastError());
-         endServer(ListenSocket, ClientSocket);
+         endServer(ClientSocket);
          _endthread();
       }
       
@@ -50,13 +36,43 @@ void receiveData(void *port_addr)
       receiveCallback(&recvBuff[0], iResult);
       
       if (iResult == 0)
-      {
-         initializeServer = TRUE;
-         endServer(ListenSocket, ClientSocket);
-      }
+      _endthread();
    }
    
    _endthread();
+}
+
+
+void awaitClientConnection()
+{
+   SOCKET ClientSocketTemp = INVALID_SOCKET;
+   char new_client_connect = 0;
+   char end_client_connect = 1;
+   
+   if (acceptClient(&ClientSocket))
+   return;
+   
+   receiveCallback(&new_client_connect, 0);
+   
+   
+   while (await_client_connect)
+   {
+      receive_client_data = TRUE;
+      
+      receiveData_Thread = (HANDLE)_beginthread(receiveData, 0, NULL);
+      
+      if (acceptClient(&ClientSocketTemp))
+      return;
+      
+      receiveCallback(&end_client_connect, 0);
+      
+      closesocket(ClientSocket);
+      ClientSocket = ClientSocketTemp;
+      
+      receiveCallback(&new_client_connect, 0);
+   }
+   
+   return;
 }
 
 
@@ -76,12 +92,11 @@ int sendData(char *bytes, int byteCnt)
 
 int iniSendReceiveServer(char *port)
 {
-   void *port_addr;
+   iniServer(port);
    
-   port_addr = port;
+   await_client_connect = TRUE;
    
-   closeDataReceiver = FALSE;
-   receiveData_Thread = (HANDLE)_beginthread(receiveData, 0, port_addr);
+   awaitClientConnection_Thread = (HANDLE)_beginthread(awaitClientConnection, 0, NULL);
    
    return 0;
 }
@@ -89,7 +104,8 @@ int iniSendReceiveServer(char *port)
 
 void endSendReceiveServer()
 {
-   closeDataReceiver = TRUE;
-   endServer(ListenSocket, ClientSocket);
-   WaitForSingleObject(receiveData_Thread, INFINITE);
+   await_client_connect = FALSE;
+   receive_client_data = FALSE;
+   endServer(ClientSocket);
+   WaitForSingleObject(awaitClientConnection_Thread, INFINITE);
 }

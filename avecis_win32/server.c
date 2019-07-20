@@ -7,7 +7,10 @@
 #include <stdio.h>
 
 
-int iniServer(char *portNumStr, SOCKET *ListenSocket, SOCKET *ClientSocket)
+SOCKET ListenSocket = INVALID_SOCKET;
+
+
+int iniServer(char *portNumStr)
 {
    WSADATA wsaData;
    struct addrinfo *result = NULL;
@@ -38,8 +41,8 @@ int iniServer(char *portNumStr, SOCKET *ListenSocket, SOCKET *ClientSocket)
    }
 
    // Create a SOCKET for connecting to server
-   *ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-   if (*ListenSocket == INVALID_SOCKET)
+   ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+   if (ListenSocket == INVALID_SOCKET)
    {
       printf("socket failed with error: %d\n", WSAGetLastError());
       freeaddrinfo(result);
@@ -48,50 +51,53 @@ int iniServer(char *portNumStr, SOCKET *ListenSocket, SOCKET *ClientSocket)
    }
 
    int enable = 1;
-   if (setsockopt(*ListenSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&enable, sizeof(int)) < 0)
+   if (setsockopt(ListenSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&enable, sizeof(int)) < 0)
    printf("setsockopt(SO_REUSEADDR) failed");
    
    // Setup the TCP listening socket
-   iResult = bind(*ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+   iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
    if (iResult == SOCKET_ERROR)
    {
       printf("bind failed with error: %d\n", WSAGetLastError());
       freeaddrinfo(result);
-      closesocket(*ListenSocket);
+      closesocket(ListenSocket);
       WSACleanup();
       return 1;
    }
 
    freeaddrinfo(result);
 
-   iResult = listen(*ListenSocket, SOMAXCONN);
+   iResult = listen(ListenSocket, 5);
    if (iResult == SOCKET_ERROR)
    {
       printf("listen failed with error: %d\n", WSAGetLastError());
-      closesocket(*ListenSocket);
+      closesocket(ListenSocket);
       WSACleanup();
       return 1;
    }
-
-   // Accept a client socket
-   *ClientSocket = accept(*ListenSocket, NULL, NULL);
-
-   if (*ClientSocket == INVALID_SOCKET)
-   {
-      printf("WSA:%d\n", WSAGetLastError());
-      closesocket(*ListenSocket);
-      WSACleanup();
-      return 1;
-   }
-
-   // No longer need server socket
-   closesocket(*ListenSocket);
 
    return 0;
 }
 
 
-void endServer(SOCKET ListenSocket, SOCKET ClientSocket)
+int acceptClient(SOCKET *ClientSocket)
+{
+   // Accept a client socket
+   *ClientSocket = accept(ListenSocket, NULL, NULL);
+
+   if (*ClientSocket == INVALID_SOCKET)
+   {
+      printf("WSA:%d\n", WSAGetLastError());
+      closesocket(ListenSocket);
+      WSACleanup();
+      return 1;
+   }
+
+   return 0;
+}
+
+
+void endServer(SOCKET ClientSocket)
 {
    // cleanup
    closesocket(ClientSocket);
