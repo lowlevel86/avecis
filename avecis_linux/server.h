@@ -1,2 +1,3 @@
-int iniServer(int, int *, int *);
-void endServer(int, int);
+int iniServer(int);
+int acceptClient(int *);
+void endServer(int);

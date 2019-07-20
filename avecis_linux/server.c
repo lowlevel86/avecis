@@ -4,28 +4,32 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <signal.h>
 #include <netinet/in.h>
 
 #define TRUE 1
 #define FALSE 0
 
+int ListenSocket = -1;
+socklen_t clilen;
+struct sockaddr_in cli_addr;
 
-int iniServer(int portNum, int *ListenSocket, int *ClientSocket)
+int iniServer(int portNum)
 {
-   socklen_t clilen;
    struct sockaddr_in serv_addr;
-   struct sockaddr_in cli_addr;
    
-   *ListenSocket = socket(AF_INET, SOCK_STREAM, 0);
+   signal(SIGPIPE, SIG_IGN);
    
-   if (*ListenSocket < 0)
+   ListenSocket = socket(AF_INET, SOCK_STREAM, 0);
+   
+   if (ListenSocket < 0)
    {
       perror("ERROR opening socket\n");
       return 1;
    }
    
    int enable = 1;
-   if (setsockopt(*ListenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+   if (setsockopt(ListenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
    perror("setsockopt(SO_REUSEADDR) failed\n");
 
    bzero((char *)&serv_addr, sizeof(serv_addr));
@@ -34,17 +38,21 @@ int iniServer(int portNum, int *ListenSocket, int *ClientSocket)
    serv_addr.sin_addr.s_addr = INADDR_ANY;
    serv_addr.sin_port = htons(portNum);
    
-   if (bind(*ListenSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+   if (bind(ListenSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
    {
       perror("ERROR on binding\n");
       return 1;
    }
    
-   listen(*ListenSocket, 5);
+   listen(ListenSocket, 5);
    clilen = sizeof(cli_addr);
    
-   *ClientSocket = -1;
-   *ClientSocket = accept(*ListenSocket, (struct sockaddr *)&cli_addr, &clilen);
+   return 0;
+}
+
+int acceptClient(int *ClientSocket)
+{
+   *ClientSocket = accept(ListenSocket, (struct sockaddr *)&cli_addr, &clilen);
    
    if (*ClientSocket < 0)
    {
@@ -55,15 +63,9 @@ int iniServer(int portNum, int *ListenSocket, int *ClientSocket)
    return 0;
 }
 
-void endServer(int ListenSocket, int ClientSocket)
+void endServer(int ClientSocket)
 {
-   if (ClientSocket == -1)
-   {
-      shutdown(ListenSocket, SHUT_RD);
-   }
-   else
-   {
-      close(ClientSocket);
-      close(ListenSocket);
-   }
+   close(ClientSocket);
+   shutdown(ListenSocket, SHUT_RD);
+   close(ListenSocket);
 }

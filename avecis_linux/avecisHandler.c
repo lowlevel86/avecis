@@ -126,6 +126,22 @@ void endAvecisHandler()
    XCloseDisplay(dpy);
 }
 
+
+void sendInputEvent(int eventType, int eventData)
+{
+   char inputEventData[5];
+   
+   // load type and data to buffer
+   inputEventData[0] = eventType;
+   inputEventData[1] = eventData & 0xFF;
+   inputEventData[2] = (eventData >> 8) & 0xFF;
+   inputEventData[3] = (eventData >> 16) & 0xFF;
+   inputEventData[4] = (eventData >> 24) & 0xFF;
+   
+   // send buffer
+   sendData(&inputEventData[0], sizeof(inputEventData));
+}
+
 void receiveCallback(char *bytes, int byteCnt)
 {
    int i, r, g, b;
@@ -138,21 +154,31 @@ void receiveCallback(char *bytes, int byteCnt)
    static int blockAllData = TRUE;
    static char errorText[] = "DATA ERROR";
    
-   // init/reset avecis handler
+   // zero bytes received from client
    if (byteCnt == 0)
    {
-      // reset variables
-      opDataSz = 0;
-      opDataSzBytesAcquired = 0;
-      opType = UNKNOWN;
+      #define NEW_CLIENT_CONNECTION 0
+      #define END_CLIENT_CONNECTION 1
+      #define DISCONNECT_SIGNAL 0xFF
       
-      if (opDataBuffInc)
-      free(opDataBuff);
+      if (bytes[0] == NEW_CLIENT_CONNECTION)
+      {
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+         
+         sendMsgEvent((void *)CONNECTION_ESTABLISHED, (void *)0);
+         blockAllData = FALSE;
+      }
       
-      opDataBuffInc = 0;
-      
-      sendMsgEvent((void *)CONNECTION_ESTABLISHED, (void *)0);
-      blockAllData = FALSE;
+      if (bytes[0] == END_CLIENT_CONNECTION)
+      sendInputEvent(DISCONNECT_SIGNAL, 0);
       
       return;
    }
@@ -781,19 +807,4 @@ void receiveCallback(char *bytes, int byteCnt)
       if (byteInc >= byteCnt)
       return;
    }
-}
-
-void sendInputEvent(int eventType, int eventData)
-{
-   char inputEventData[5];
-   
-   // load type and data to buffer
-   inputEventData[0] = eventType;
-   inputEventData[1] = eventData & 0xFF;
-   inputEventData[2] = (eventData >> 8) & 0xFF;
-   inputEventData[3] = (eventData >> 16) & 0xFF;
-   inputEventData[4] = (eventData >> 24) & 0xFF;
-   
-   // send buffer
-   sendData(&inputEventData[0], sizeof(inputEventData));
 }

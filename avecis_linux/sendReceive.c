@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <sys/socket.h>
 #include <pthread.h>
 #include <unistd.h>
 #include "sendReceive.h"
@@ -8,51 +9,67 @@
 #define FALSE 0
 
 
-int ListenSocket = -1;
 int ClientSocket = -1;
-int closeDataReceiver = FALSE;
+int await_client_connect;
+int receive_client_data;
+pthread_t awaitClientConnection_Thread = -1;
 pthread_t receiveData_Thread = -1;
 
 
-void *receiveData(void *port_addr)
+void *receiveData()
 {
    int result;
    char recvBuff[4096];
-   int port;
-   int initializeServer = TRUE;
    
-   port = (int)port_addr;
-   
-   while (closeDataReceiver == FALSE)
+   while (receive_client_data)
    {
-      if (initializeServer)
-      {
-         if (iniServer(port, &ListenSocket, &ClientSocket))
-         return NULL;
-         
-         // init/reset
-         receiveCallback(&recvBuff[0], 0);
-         
-         initializeServer = FALSE;
-      }
-      
       result = read(ClientSocket, (char *)&recvBuff[0], 4096);
       
       if (result < 0)
-      {
-         printf("ERROR reading from socket\n");
-         endServer(ListenSocket, ClientSocket);
-         return NULL;
-      }
+      printf("ERROR reading from socket\n");
       
       if (result > 0)
       receiveCallback(&recvBuff[0], result);
       
       if (result == 0)
+      return NULL;
+   }
+   
+   return NULL;
+}
+
+
+void *awaitClientConnection()
+{
+   int ClientSocketTemp = -1;
+   char new_client_connect = 0;
+   char end_client_connect = 1;
+   
+   if (acceptClient(&ClientSocket))
+   return NULL;
+   
+   receiveCallback(&new_client_connect, 0);
+   
+   
+   while (await_client_connect)
+   {
+      receive_client_data = TRUE;
+      
+      if (pthread_create(&receiveData_Thread, NULL, receiveData, NULL))
       {
-         initializeServer = TRUE;
-         endServer(ListenSocket, ClientSocket);
+         printf("Receive thread did not initialize.\n");
+         return NULL;
       }
+      
+      if (acceptClient(&ClientSocketTemp))
+      return NULL;
+      
+      receiveCallback(&end_client_connect, 0);
+      
+      close(ClientSocket);
+      ClientSocket = ClientSocketTemp;
+      
+      receiveCallback(&new_client_connect, 0);
    }
    
    return NULL;
@@ -63,24 +80,22 @@ int sendData(char *bytes, int byteCnt)
 {
    int result;
    
-   // send data
    result = write(ClientSocket, &bytes[0], byteCnt);
    
    if (result < 0)
    printf("ERROR writing to socket\n");
-   
+
    return result;
 }
 
 
 int iniSendReceiveServer(int port)
 {
-   void *port_addr;
+   iniServer(port);
    
-   port_addr = (void *)port;
+   await_client_connect = TRUE;
    
-   closeDataReceiver = FALSE;
-   if (pthread_create(&receiveData_Thread, NULL, receiveData, port_addr))
+   if (pthread_create(&awaitClientConnection_Thread, NULL, awaitClientConnection, NULL))
    {
       printf("Receive thread did not initialize.\n");
       return 1;
@@ -92,7 +107,8 @@ int iniSendReceiveServer(int port)
 
 void endSendReceiveServer()
 {
-   closeDataReceiver = TRUE;
-   endServer(ListenSocket, ClientSocket);
+   await_client_connect = FALSE;
+   receive_client_data = FALSE;
+   endServer(ClientSocket);
    pthread_join(receiveData_Thread, NULL);
 }
