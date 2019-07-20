@@ -66,7 +66,6 @@ void awaitClientConnection()
       
       receiveCallback(&end_client_connect, 0);
       
-      closesocket(ClientSocket);
       ClientSocket = ClientSocketTemp;
       
       receiveCallback(&new_client_connect, 0);
