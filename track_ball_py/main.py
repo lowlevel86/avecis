@@ -20,7 +20,6 @@ class rv:
    perspective = 300
    orthographic = True
    fog = True
-   fogColor = 0xFFFFFF
    fogStart = 100
    fogEnd = -50
    antialiasing = True
@@ -308,10 +307,12 @@ def Main():
    setPerspective(rv.perspective)
    orthographicMode(rv.orthographic)
    fogMode(rv.fog)
-   fogColor(rv.fogColor)
    fogStart(rv.fogStart)
    fogEnd(rv.fogEnd)
    antialiasingMode(rv.antialiasing)
+   
+   setColor([0xFF, 0xFF, 0xFF])
+   fogColor()
    
    drawScreen()
    

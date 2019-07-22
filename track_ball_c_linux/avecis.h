@@ -150,7 +150,7 @@ void viewEnd(float);
 void setPerspective(float);
 void orthographicMode(int);
 void fogMode(int);
-void fogColor(int);
+void fogColor();
 void fogStart(float);
 void fogEnd(float);
 void antialiasingMode(int);

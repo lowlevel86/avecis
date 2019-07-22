@@ -144,7 +144,7 @@ void sendInputEvent(int eventType, int eventData)
 
 void receiveCallback(char *bytes, int byteCnt)
 {
-   int i, r, g, b;
+   int i;
    int byteInc = 0;
    static uint32_t opDataSz = 0;
    static int opDataSzBytesAcquired = 0;
@@ -275,6 +275,21 @@ void receiveCallback(char *bytes, int byteCnt)
       
       ////////////////////////////////////////////////////////////
       ///////////// these operations require no data /////////////
+      
+      if (opType == SET_FOG_COLOR)
+      {
+         fogColor();
+         
+         // reset variables
+         opDataSz = 0;
+         opDataSzBytesAcquired = 0;
+         opType = UNKNOWN;
+         
+         if (opDataBuffInc)
+         free(opDataBuff);
+         
+         opDataBuffInc = 0;
+      }
       
       if (opType == CLEAR_SCREEN)
       {
@@ -491,41 +506,6 @@ void receiveCallback(char *bytes, int byteCnt)
          }
          
          fogMode((int)opDataBuff[0] & 0xFF);
-         
-         // reset variables
-         opDataSz = 0;
-         opDataSzBytesAcquired = 0;
-         opType = UNKNOWN;
-         
-         if (opDataBuffInc)
-         free(opDataBuff);
-         
-         opDataBuffInc = 0;
-      }
-      
-      if (byteInc >= byteCnt)
-      return;
-      
-      
-      if (opType == SET_FOG_COLOR)
-      {
-         while (TRUE)
-         {
-            opDataBuff[opDataBuffInc] = bytes[byteInc];
-            opDataBuffInc++;
-            byteInc++;
-            
-            if (opDataBuffInc >= opDataSz)
-            break;
-            
-            if (byteInc >= byteCnt)
-            return;
-         }
-         
-         r = opDataBuff[0] & 0xFF;
-         g = opDataBuff[1] & 0xFF;
-         b = opDataBuff[2] & 0xFF;
-         fogColor(r | g<<8 | b<<16);
          
          // reset variables
          opDataSz = 0;

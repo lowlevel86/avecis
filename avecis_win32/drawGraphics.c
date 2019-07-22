@@ -110,9 +110,12 @@ void fogMode(int value)
    fog = value;
 }
 
-void fogColor(int value)
+void fogColor()
 {
-   fColor = value;
+   fColor = colorData[colorInc];
+   
+   if (colorInc < colorCnt-1)
+   colorInc++;
 }
 
 void fogStart(float value)

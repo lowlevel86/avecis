@@ -325,7 +325,6 @@ int main(int argc, char **argv)
    rv.perspective = 300;
    rv.orthographic = TRUE;
    rv.fog = TRUE;
-   rv.fogColor = 0xFFFFFF;
    rv.fogStart = 100;
    rv.fogEnd = -50;
    rv.antialiasing = TRUE;
@@ -395,10 +394,12 @@ int main(int argc, char **argv)
    setPerspective(rv.perspective);
    orthographicMode(rv.orthographic);
    fogMode(rv.fog);
-   fogColor(rv.fogColor);
    fogStart(rv.fogStart);
    fogEnd(rv.fogEnd);
    antialiasingMode(rv.antialiasing);
+   
+   setColor("\xFF\xFF\xFF", 3);
+   fogColor();
    
    drawScreen();
    

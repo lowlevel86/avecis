@@ -262,21 +262,17 @@ void fogMode(int value)
    pthread_mutex_unlock(&avecis_sendData_lock);
 }
 
-void fogColor(int value)
+void fogColor()
 {
    char opDataHead[5] = {0};
    
    // place the size and type into the data head array
-   opDataHead[0] = 4;
    opDataHead[4] = SET_FOG_COLOR;
    
    pthread_mutex_lock(&avecis_sendData_lock);
    
    // send the data head array
    sendData(&opDataHead[0], sizeof(opDataHead));
-   
-   // send the data
-   sendData((char *)&value, 4);
    
    pthread_mutex_unlock(&avecis_sendData_lock);
 }

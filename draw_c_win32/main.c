@@ -57,7 +57,7 @@ void eventCallback(int evType, int keyCode, int xM, int yM)
       showContent();
    }
    
-   printSB("evType:%i keyCode:0x%X xM:%i yM:%i -- Press Esc to Disconnect\n", evType, keyCode, xM, yM);
+   printSB("evType:%i keyCode:0x%X xM:%i yM:%i -- Press Esc to Disconnect", evType, keyCode, xM, yM);
    
    if (keyCode == KC_ESC)
    unblockAvecisDisconnect();

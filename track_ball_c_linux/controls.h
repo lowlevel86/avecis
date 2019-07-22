@@ -37,7 +37,6 @@ struct rendVars
    float perspective;
    int orthographic;
    int fog;
-   int fogColor;
    float fogStart;
    float fogEnd;
    int antialiasing;

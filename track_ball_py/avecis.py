@@ -279,17 +279,14 @@ def fogMode(value):
    finally:
       avecis_sendData_lock.release()
 
-def fogColor(value):
+def fogColor():
    avecis_sendData_lock.acquire()
    try:
       # send the data head array
-      sendData(struct.pack('<I', 4) + b'\x05') # 5 = SET_FOG_COLOR
-      
-      # send the data
-      sendData(struct.pack('<I', value))
+      sendData(b'\x00\x00\x00\x00\x05') # 5 = SET_FOG_COLOR
    finally:
       avecis_sendData_lock.release()
-
+   
 def fogStart(value):
    avecis_sendData_lock.acquire()
    try:
