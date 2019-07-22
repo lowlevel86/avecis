@@ -203,9 +203,9 @@ void viewStart(float value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 4;
-   opDataHead[4] = SET_VIEW_START;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_VIEW_START;
+   opDataHead[1] = 4;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -222,9 +222,9 @@ void viewEnd(float value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 4;
-   opDataHead[4] = SET_VIEW_END;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_VIEW_END;
+   opDataHead[1] = 4;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -241,9 +241,9 @@ void setPerspective(float value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 4;
-   opDataHead[4] = SET_PERSPECTIVE;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_PERSPECTIVE;
+   opDataHead[1] = 4;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -260,9 +260,9 @@ void orthographicMode(int value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 1;
-   opDataHead[4] = SET_ORTHOGRAPHIC_MODE;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_ORTHOGRAPHIC_MODE;
+   opDataHead[1] = 1;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -279,9 +279,9 @@ void fogMode(int value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 1;
-   opDataHead[4] = SET_FOG_MODE;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_FOG_MODE;
+   opDataHead[1] = 1;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -298,8 +298,8 @@ void fogColor()
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[4] = SET_FOG_COLOR;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_FOG_COLOR;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -313,9 +313,9 @@ void fogStart(float value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 4;
-   opDataHead[4] = SET_FOG_START;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_FOG_START;
+   opDataHead[1] = 4;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -332,9 +332,9 @@ void fogEnd(float value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 4;
-   opDataHead[4] = SET_FOG_END;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_FOG_END;
+   opDataHead[1] = 4;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -351,9 +351,9 @@ void antialiasingMode(int value)
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[0] = 1;
-   opDataHead[4] = SET_ANTIALIASING_MODE;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_ANTIALIASING_MODE;
+   opDataHead[1] = 1;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -374,12 +374,12 @@ void setColor(char *colorData, int byteDataCnt)
    // size in bytes
    size = byteDataCnt;
    
-   // place the size and type into the data head array
-   opDataHead[0] = size & 0xFF;
-   opDataHead[1] = (size >> 8) & 0xFF;
-   opDataHead[2] = (size >> 16) & 0xFF;
-   opDataHead[3] = (size >> 24) & 0xFF;
-   opDataHead[4] = SET_COLOR;
+   // place the type and size into the data head array
+   opDataHead[0] = SET_COLOR;
+   opDataHead[1] = size & 0xFF;
+   opDataHead[2] = (size >> 8) & 0xFF;
+   opDataHead[3] = (size >> 16) & 0xFF;
+   opDataHead[4] = (size >> 24) & 0xFF;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -396,8 +396,8 @@ void clearScreen()
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[4] = CLEAR_SCREEN;
+   // place the type and size into the data head array
+   opDataHead[0] = CLEAR_SCREEN;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -415,12 +415,12 @@ void drawLine(float *coordData, int floatDataCnt)
    // size in bytes
    size = floatDataCnt * sizeof(float);
    
-   // place the size and type into the data head array
-   opDataHead[0] = size & 0xFF;
-   opDataHead[1] = (size >> 8) & 0xFF;
-   opDataHead[2] = (size >> 16) & 0xFF;
-   opDataHead[3] = (size >> 24) & 0xFF;
-   opDataHead[4] = DRAW_LINE;
+   // place the type and size into the data head array
+   opDataHead[0] = DRAW_LINE;
+   opDataHead[1] = size & 0xFF;
+   opDataHead[2] = (size >> 8) & 0xFF;
+   opDataHead[3] = (size >> 16) & 0xFF;
+   opDataHead[4] = (size >> 24) & 0xFF;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -441,12 +441,12 @@ void drawPath(float *coordData, int floatDataCnt)
    // size in bytes
    size = floatDataCnt * sizeof(float);
    
-   // place the size and type into the data head array
-   opDataHead[0] = size & 0xFF;
-   opDataHead[1] = (size >> 8) & 0xFF;
-   opDataHead[2] = (size >> 16) & 0xFF;
-   opDataHead[3] = (size >> 24) & 0xFF;
-   opDataHead[4] = DRAW_PATH;
+   // place the type and size into the data head array
+   opDataHead[0] = DRAW_PATH;
+   opDataHead[1] = size & 0xFF;
+   opDataHead[2] = (size >> 8) & 0xFF;
+   opDataHead[3] = (size >> 16) & 0xFF;
+   opDataHead[4] = (size >> 24) & 0xFF;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -463,8 +463,8 @@ void showContent()
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[4] = SHOW_CONTENT;
+   // place the type and size into the data head array
+   opDataHead[0] = SHOW_CONTENT;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -489,12 +489,12 @@ void printSB(char *fmtStr, ...)
    
    va_end(arg);
    
-   // place the size and type into the data head array
-   opDataHead[0] = size & 0xFF;
-   opDataHead[1] = (size >> 8) & 0xFF;
-   opDataHead[2] = (size >> 16) & 0xFF;
-   opDataHead[3] = (size >> 24) & 0xFF;
-   opDataHead[4] = PRINT_STATUS;
+   // place the type and size into the data head array
+   opDataHead[0] = PRINT_STATUS;
+   opDataHead[1] = size & 0xFF;
+   opDataHead[2] = (size >> 8) & 0xFF;
+   opDataHead[3] = (size >> 16) & 0xFF;
+   opDataHead[4] = (size >> 24) & 0xFF;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -517,12 +517,12 @@ void playSound(float *leftSnd, float *rightSnd, int sampleCnt)
    // size in bytes
    size = sampleCnt * sizeof(float) * 2;
    
-   // place the size and type into the data head array
-   opDataHead[0] = size & 0xFF;
-   opDataHead[1] = (size >> 8) & 0xFF;
-   opDataHead[2] = (size >> 16) & 0xFF;
-   opDataHead[3] = (size >> 24) & 0xFF;
-   opDataHead[4] = PLAY_SOUND;
+   // place the type and size into the data head array
+   opDataHead[0] = PLAY_SOUND;
+   opDataHead[1] = size & 0xFF;
+   opDataHead[2] = (size >> 8) & 0xFF;
+   opDataHead[3] = (size >> 16) & 0xFF;
+   opDataHead[4] = (size >> 24) & 0xFF;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -540,8 +540,8 @@ void stopSound()
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[4] = STOP_SOUND;
+   // place the type and size into the data head array
+   opDataHead[0] = STOP_SOUND;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    
@@ -555,8 +555,8 @@ void endTransmission()
 {
    char opDataHead[5] = {0};
    
-   // place the size and type into the data head array
-   opDataHead[4] = END_TRANSMISSION;
+   // place the type and size into the data head array
+   opDataHead[0] = END_TRANSMISSION;
    
    WaitForSingleObject(avecis_sendData_lock, INFINITE);
    

@@ -188,6 +188,17 @@ void receiveCallback(char *bytes, int byteCnt)
    
    while (TRUE)
    {
+      // get the operation
+      if (opType == UNKNOWN)
+      {
+         opType = bytes[byteInc] & 0xFF;
+         byteInc++;
+      }
+      
+      if (byteInc >= byteCnt)
+      return;
+      
+      
       // get the operation data size
       if (opDataSzBytesAcquired < sizeof(uint32_t))
       {
@@ -227,16 +238,6 @@ void receiveCallback(char *bytes, int byteCnt)
             opDataSzBytesAcquired++;
             byteInc++;
          }
-         
-         if (byteInc >= byteCnt)
-         return;
-      }
-      
-      
-      if (opType == UNKNOWN)
-      {
-         opType = bytes[byteInc] & 0xFF;
-         byteInc++;
          
          opDataBuff = malloc(opDataSz);
       }
