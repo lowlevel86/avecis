@@ -622,7 +622,11 @@ void receiveCallback(char *bytes, int byteCnt)
          byteInc++;
          
          if (eventType == DISCONNECT_SIGNAL)
-         exit(-1);
+         {
+            CloseHandle(avecis_sendData_lock);
+            endSendReceiveClient();
+            exit(0);
+         }
          
          if (eventType == MOUSE_MOVE)
          eventCallback(eventType, 0, eventData&0xFFFF, eventData>>16&0xFFFF);
