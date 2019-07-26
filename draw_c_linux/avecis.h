@@ -157,7 +157,7 @@ int iniClient(char *hostname, int portNum, int *connectSocket)
    
    if (*connectSocket < 0)
    {
-      perror("ERROR opening socket");
+      perror("ERROR opening socket\n");
       return 1;
    }
    
@@ -178,7 +178,7 @@ int iniClient(char *hostname, int portNum, int *connectSocket)
    
    if (connect(*connectSocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
    {
-      perror("ERROR connecting");
+      perror("ERROR connecting\n");
       return 1;
    }
    
@@ -216,7 +216,7 @@ void *receiveData(void *receiveCallback_addr)
       
       if (result < 0)
       {
-         printf("ERROR reading from socket");
+         printf("ERROR reading from socket\n");
          endClient(sendReceive_ConnectSocket);
          return NULL;
       }
@@ -241,7 +241,7 @@ int sendData(char *bytes, int byteCnt)
    result = write(sendReceive_ConnectSocket, &bytes[0], byteCnt);
    
    if (result < 0)
-   printf("ERROR writing to socket");
+   printf("ERROR writing to socket\n");
    
    return result;
 }
