@@ -36,7 +36,7 @@ int getArg(char *cmdLineStr, char flag, int argType, char **retArg)
       }
    }
    
-   if ((flagExists == FALSE) && (argType != only_flag))
+   if (flagExists == FALSE)
    return -1;
    
    // return a string with a one or zero if it is only a flag
@@ -122,8 +122,8 @@ int getArg(char *cmdLineStr, char flag, int argType, char **retArg)
 }
 
 
-void getCmdLineArgs(char *cmdLineStr, char *argFlags,
-                    int *argTypes, int argCnt, void ***argList)
+void readCmdLineArgs(char *cmdLineStr, char *argFlags,
+                     int *argTypes, int argCnt, void ***argList)
 {
    int i;
    char *arg;
@@ -158,6 +158,31 @@ void getCmdLineArgs(char *cmdLineStr, char *argFlags,
 }
 
 
+char *cmdLineStr_addr;
+int cmdLineStr_allocated = FALSE;
+
+
+void mergeCmdLineArgs(char *args[], int argCnt, char **cmdLineStr)
+{
+   int i;
+   int strLength = 0;
+   
+   for (i=0; i < argCnt; i++)
+   {
+      strLength += strlen(args[i])+1;
+   }
+   
+   *cmdLineStr = (char *)malloc(strLength+1);
+   cmdLineStr_addr = *cmdLineStr;
+   cmdLineStr_allocated = TRUE;
+   
+   for (i=0; i < argCnt; i++)
+   {
+      sprintf(*cmdLineStr, "%s %s", *cmdLineStr, args[i]);
+   }
+}
+
+
 void freeCmdLineArgs()
 {
    int i;
@@ -174,4 +199,7 @@ void freeCmdLineArgs()
       stringCnt = 0;
       strings_allocated = FALSE;
    }
+   
+   if (cmdLineStr_allocated)
+   free(cmdLineStr_addr);
 }

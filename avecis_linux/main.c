@@ -80,10 +80,9 @@ Atom userMsg;
 
 int wndEventProc(Display *, Window);
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-   int i;
-   char cmdLineStr[4096] = "";
+   char *cmdLineStr;
    Display *dpy;
    Window window;
    
@@ -105,20 +104,9 @@ int main(int argc, char* argv[])
    argL.display_help = FALSE;
 
    // copy command line args to one line
-   for (i=0; i < argc; i++)
-   {
-      if (strlen(cmdLineStr)+strlen(argv[i])+1 < sizeof(cmdLineStr))
-      {
-         sprintf(cmdLineStr, "%s %s", cmdLineStr, argv[i]);
-      }
-      else
-      {
-         printf("Not enough memory for arguments.\n");
-         exit(1);
-      }
-   }
+   mergeCmdLineArgs(argv, argc, &cmdLineStr);
 
-   getCmdLineArgs(cmdLineStr, flags, argTypes, argCnt, (void ***)&argL);
+   readCmdLineArgs(cmdLineStr, flags, argTypes, argCnt, (void ***)&argL);
    
    if (argL.display_help)
    {

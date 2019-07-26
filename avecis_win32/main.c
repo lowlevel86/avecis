@@ -105,7 +105,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
    argL.allow_popup = FALSE;
    argL.display_help = FALSE;
 
-   getCmdLineArgs((char *)szCmdLine, flags, argTypes, argCnt, (void ***)&argL);
+   readCmdLineArgs((char *)szCmdLine, flags, argTypes, argCnt, (void ***)&argL);
    
    if (argL.display_help)
    {

@@ -3,5 +3,6 @@
 #define float_arg 2
 #define only_flag 3
 
-void getCmdLineArgs(char *, char *, int *, int, void ***);
+void readCmdLineArgs(char *, char *, int *, int, void ***);
+void mergeCmdLineArgs(char *[], int, char **);
 void freeCmdLineArgs();
