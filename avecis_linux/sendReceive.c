@@ -110,5 +110,4 @@ void endSendReceiveServer()
    await_client_connect = FALSE;
    receive_client_data = FALSE;
    endServer(ClientSocket);
-   pthread_join(awaitClientConnection_Thread, NULL);
 }
