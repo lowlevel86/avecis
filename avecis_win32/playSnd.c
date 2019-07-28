@@ -41,24 +41,42 @@ void stopSound()
 }
 
 
-void playSound(float *leftSnd, float *rightSnd, int samples)
+void playSound(float *leftSnd, float *rightSnd, int sndSamples)
 {
    int i;
+   int buffSamples;
+   int remainder;
+   
+   // make sure the sound samples fit into buffer units
+   buffSamples = sndSamples;
+   
+   remainder = sndSamples % bufferSampleCnt;
+   
+   if (remainder)
+   buffSamples = sndSamples + (bufferSampleCnt - remainder);
    
    // load the first buffer if both buffers are not busy
    if ((sampA.busy == FALSE) && (sampB.busy == FALSE))
    {
-      sampA.leftBuff = (float *)malloc(samples * sizeof(float));
-      sampA.rightBuff = (float *)malloc(samples * sizeof(float));
+      sampA.leftBuff = (float *)malloc(buffSamples * sizeof(float));
+      sampA.rightBuff = (float *)malloc(buffSamples * sizeof(float));
       
-      for (i=0; i < samples; i++)
+      for (i=0; i < buffSamples; i++)
       {
-         sampA.leftBuff[i] = leftSnd[i];
-         sampA.rightBuff[i] = rightSnd[i];
+         if (i < sndSamples)
+         {
+            sampA.leftBuff[i] = leftSnd[i];
+            sampA.rightBuff[i] = rightSnd[i];
+         }
+         else
+         {
+            sampA.leftBuff[i] = 0;
+            sampA.rightBuff[i] = 0;
+         }
       }
       
       sampA.read = 0;
-      sampA.cnt = samples;
+      sampA.cnt = buffSamples;
       sampA.busy = TRUE;
       
       samp = &sampA;
@@ -68,17 +86,25 @@ void playSound(float *leftSnd, float *rightSnd, int samples)
    // load the second buffer if only the first buffer is busy
    if ((sampA.busy == TRUE) && (sampB.busy == FALSE))
    {
-      sampB.leftBuff = (float *)malloc(samples * sizeof(float));
-      sampB.rightBuff = (float *)malloc(samples * sizeof(float));
+      sampB.leftBuff = (float *)malloc(buffSamples * sizeof(float));
+      sampB.rightBuff = (float *)malloc(buffSamples * sizeof(float));
       
-      for (i=0; i < samples; i++)
+      for (i=0; i < buffSamples; i++)
       {
-         sampB.leftBuff[i] = leftSnd[i];
-         sampB.rightBuff[i] = rightSnd[i];
+         if (i < sndSamples)
+         {
+            sampB.leftBuff[i] = leftSnd[i];
+            sampB.rightBuff[i] = rightSnd[i];
+         }
+         else
+         {
+            sampB.leftBuff[i] = 0;
+            sampB.rightBuff[i] = 0;
+         }
       }
       
       sampB.read = 0;
-      sampB.cnt = samples;
+      sampB.cnt = buffSamples;
       sampB.busy = TRUE;
       
       return;
@@ -87,17 +113,25 @@ void playSound(float *leftSnd, float *rightSnd, int samples)
    // load the first buffer if only the second buffer is busy
    if ((sampA.busy == FALSE) && (sampB.busy == TRUE))
    {
-      sampA.leftBuff = (float *)malloc(samples * sizeof(float));
-      sampA.rightBuff = (float *)malloc(samples * sizeof(float));
+      sampA.leftBuff = (float *)malloc(buffSamples * sizeof(float));
+      sampA.rightBuff = (float *)malloc(buffSamples * sizeof(float));
       
-      for (i=0; i < samples; i++)
+      for (i=0; i < buffSamples; i++)
       {
-         sampA.leftBuff[i] = leftSnd[i];
-         sampA.rightBuff[i] = rightSnd[i];
+         if (i < sndSamples)
+         {
+            sampA.leftBuff[i] = leftSnd[i];
+            sampA.rightBuff[i] = rightSnd[i];
+         }
+         else
+         {
+            sampA.leftBuff[i] = 0;
+            sampA.rightBuff[i] = 0;
+         }
       }
       
       sampA.read = 0;
-      sampA.cnt = samples;
+      sampA.cnt = buffSamples;
       sampA.busy = TRUE;
       
       return;
