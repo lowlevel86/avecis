@@ -68,7 +68,7 @@ Within a bash terminal this code will draw a line in the avecis window given tha
 
 #### perl -e "print pack('C I< f<f<f< f<f<f< C I<',11, 24, -90,-40,0, 90,40,0, 13,0)" | nc 127.0.0.1 27015
 
-Note that the avecis window does not reset the graphics for each client connection.  
+Note that avecis does not reset the graphics for each client connection.  
 
 ___
 
