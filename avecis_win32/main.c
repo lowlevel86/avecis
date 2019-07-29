@@ -51,7 +51,7 @@ Usage:\n\
 avecis [options]\n\
  \n\
 Options:\n\
--t [title], changes the window title; the default is 'avecis'\n\
+-t [title], changes the window title; the default is 'Avecis'\n\
 -x [x position], changes the x position; the default is 0\n\
 -y [y position], changes the y position; the default is 0\n\
 -w [width], changes the window width; the default is 640\n\
