@@ -72,12 +72,12 @@ Note that avecis does not reset the graphics for each client connection.
 
 ___
 
-## Avecis Usage
+## Avecis Command Line Usage
 
 avecis [options]  
   
 Options:  
--t [title], changes the window title; the default is 'avecis'  
+-t [title], changes the window title; the default is 'Avecis'  
 -x [x position], changes the x position; the default is 0  
 -y [y position], changes the y position; the default is 0  
 -w [width], changes the window width; the default is 640  
