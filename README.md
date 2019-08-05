@@ -10,7 +10,7 @@ ___
 
 ![](pics/hello_world.png)
 
-The program in each of the 'hello_world*' folders demonstrates drawing, printing to the status bar, and playing a sound.
+Each program in the 'hello_world*' folders demonstrates drawing, printing to the status bar, and playing a sound.
 
 ___
 
@@ -18,7 +18,7 @@ ___
 
 ![](pics/sine.png)
 
-The program in each of the 'sine*' folders demonstrates playing unbroken sound segments.
+Each program in the 'sine*' folders demonstrates playing unbroken sound segments.
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 ![](pics/track_ball.png)
 
-The program in each of the 'track_ball*' folders demonstrates 3D vector graphics.
+Each program in the 'track_ball*' folders demonstrates 3D vector graphics.
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 ![](pics/yarn.png)
 
-The program in each of the 'yarn*' folders demonstrates using 3D vector graphics on top of a raster.
+Each program in the 'yarn*' folders demonstrates using 3D vector graphics on top of a raster.
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 ## Accessing Avecis Using Perl and Netcat
 
-Within a bash terminal this code will draw a line in the avecis window given that 27015 is the default port.  
+Using a bash terminal this code will draw a line in the avecis window.  
 
 #### perl -e "print pack('C I< f<f<f< f<f<f< C I<',11, 24, -90,-40,0, 90,40,0, 13,0)" | nc 127.0.0.1 27015
 
