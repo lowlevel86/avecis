@@ -68,7 +68,7 @@ void receiveCallback(char *bytes, int byteCnt)
    static int opDataSzBytesAcquired = 0;
    static char *opDataBuff;
    static int opDataBuffInc = 0;
-   static int opType = UNKNOWN;
+   static uint32_t opType = UNKNOWN;
    static int blockAllData = TRUE;
    static char errorText[] = "DATA ERROR";
    
@@ -170,8 +170,25 @@ void receiveCallback(char *bytes, int byteCnt)
       }*/
       
       // check for errors
-      if (opType != 0xFF)
-      if ((opType < -1) || (opType > 17))
+      if (((opType > 16) && (opType != 0xFF)) || // if operation doesn't exist
+          ((opType == 0) && (opDataSz != 4)) || //SET_VIEW_START
+          ((opType == 1) && (opDataSz != 4)) || //SET_VIEW_END
+          ((opType == 2) && (opDataSz != 4)) || //SET_PERSPECTIVE
+          ((opType == 3) && (opDataSz != 1)) || //SET_ORTHOGRAPHIC_MODE
+          ((opType == 4) && (opDataSz != 1)) || //SET_FOG_MODE
+          ((opType == 5) && (opDataSz != 0)) || //SET_FOG_COLOR
+          ((opType == 6) && (opDataSz != 4)) || //SET_FOG_START
+          ((opType == 7) && (opDataSz != 4)) || //SET_FOG_END
+          ((opType == 8) && (opDataSz != 1)) || //SET_ANTIALIASING_MODE
+          ((opType == 9) && (opDataSz > INT_MAX)) || //SET_COLOR
+          ((opType == 10) && (opDataSz != 0)) || //CLEAR_SCREEN
+          ((opType == 11) && (opDataSz > INT_MAX)) || //DRAW_LINE
+          ((opType == 12) && (opDataSz > INT_MAX)) || //DRAW_PATH
+          ((opType == 13) && (opDataSz != 0)) || //SHOW_CONTENT
+          ((opType == 14) && (opDataSz > INT_MAX)) || //PRINT_STATUS
+          ((opType == 15) && (opDataSz > INT_MAX)) || //PLAY_SOUND
+          ((opType == 16) && (opDataSz != 0)) || //STOP_SOUND
+          ((opType == 0xFF) && (opDataSz != 0))) //END_TRANSMISSION
       {
          // reset variables
          opDataSz = 0;
