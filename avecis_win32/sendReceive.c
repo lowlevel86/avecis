@@ -66,6 +66,8 @@ void awaitClientConnection()
       
       receiveCallback(&end_client_connect, 0);
       
+      WaitForSingleObject(receiveData_Thread, INFINITE);
+      
       ClientSocket = ClientSocketTemp;
       
       receiveCallback(&new_client_connect, 0);

@@ -66,6 +66,8 @@ void *awaitClientConnection()
       
       receiveCallback(&end_client_connect, 0);
       
+      pthread_join(receiveData_Thread, NULL);
+      
       close(ClientSocket);
       ClientSocket = ClientSocketTemp;
       
