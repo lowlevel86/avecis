@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <limits.h>
 #include "sendReceive.h"
 #include "drawGraphics.h"
 #include "playSnd.h"
