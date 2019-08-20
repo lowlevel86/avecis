@@ -14,6 +14,7 @@ int await_client_connect;
 int receive_client_data;
 pthread_t awaitClientConnection_Thread = -1;
 pthread_t receiveData_Thread = -1;
+int client_exists;
 
 
 void *receiveData()
@@ -66,6 +67,7 @@ void *awaitClientConnection()
       
       receiveCallback(&end_client_connect, 0);
       
+      if (client_exists)
       pthread_join(receiveData_Thread, NULL);
       
       close(ClientSocket);
@@ -85,7 +87,14 @@ int sendData(char *bytes, int byteCnt)
    result = write(ClientSocket, &bytes[0], byteCnt);
    
    if (result < 0)
-   printf("ERROR writing to socket\n");
+   {
+      client_exists = FALSE;
+      printf("ERROR writing to socket\n");
+   }
+   else
+   {
+      client_exists = TRUE;
+   }
 
    return result;
 }

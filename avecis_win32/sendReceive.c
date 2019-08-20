@@ -14,6 +14,7 @@ int await_client_connect;
 int receive_client_data;
 HANDLE awaitClientConnection_Thread = NULL;
 HANDLE receiveData_Thread = NULL;
+int client_exists;
 
 
 void receiveData()
@@ -66,6 +67,7 @@ void awaitClientConnection()
       
       receiveCallback(&end_client_connect, 0);
       
+      if (client_exists)
       WaitForSingleObject(receiveData_Thread, INFINITE);
       
       ClientSocket = ClientSocketTemp;
@@ -85,7 +87,14 @@ int sendData(char *bytes, int byteCnt)
    iResult = send(ClientSocket, &bytes[0], byteCnt, 0);
    
    if (iResult == SOCKET_ERROR)
-   printf("WSA: %d\n", WSAGetLastError());
+   {
+      client_exists = FALSE;
+      printf("WSA: %d\n", WSAGetLastError());
+   }
+   else
+   {
+      client_exists = TRUE;
+   }
 
    return iResult;
 }
