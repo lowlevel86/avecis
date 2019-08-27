@@ -273,7 +273,7 @@ int setParams(snd_pcm_t *handle, snd_pcm_hw_params_t *params, snd_pcm_sw_params_
    snd_pcm_uframes_t ringBuffSz;
    snd_pcm_sframes_t periodBuffSz;
    
-   ringBuffLgth_uSec = (float)framesPerBuff / sampRate * 5000000; // ring buffer length in us
+   ringBuffLgth_uSec = (float)framesPerBuff / sampRate * 3000000; // ring buffer length in us
    periodLgth_uSec = (float)framesPerBuff / sampRate * 1000000; // period time in us
 
    // choose all parameters
