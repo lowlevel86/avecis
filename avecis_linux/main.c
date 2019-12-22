@@ -32,7 +32,7 @@
 #define SOUND_DONE_SIGNAL 11
 #define DISCONNECT_SIGNAL 0xFF
 
-char flags[10] = {'t', 'x', 'y', 'w', 'h', 'p', 'b', 's', 'u', 'h'};
+char flags[10] = {'t', 'x', 'y', 'w', 'i', 'p', 'b', 's', 'u', 'h'};
 int argTypes[10] = {string_arg, int_arg, int_arg, int_arg, int_arg,
                     int_arg, int_arg, int_arg, only_flag, only_flag};
 int argCnt = 10;
