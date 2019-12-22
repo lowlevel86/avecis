@@ -64,7 +64,7 @@ Options:\n\
 -x [x position], changes the x position; the default is 0\n\
 -y [y position], changes the y position; the default is 0\n\
 -w [width], changes the window width; the default is 640\n\
--h [height], changes the window height; the default is 360\n\
+-i [height], changes the window height; the default is 360\n\
 -p [port], changes the server port; the default is 27015\n\
 -b [buffer size], changes the audio buffer size; the default is 4096\n\
 -s [samples/sec], changes the audio sample rate; the default is 11025\n\
@@ -72,7 +72,7 @@ Options:\n\
 -h, displays this message\n\
  \n\
 Example usage:\n\
-avecis -t 'New Title' -w 400 -h 400 -p 27016 -u\n\
+avecis -t 'New Title' -w 400 -i 400 -p 27016 -u\n\
 "};
 
 Atom wmDeleteMessage;
