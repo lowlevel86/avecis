@@ -81,7 +81,7 @@ Options:
 -x [x position], changes the x position; the default is 0  
 -y [y position], changes the y position; the default is 0  
 -w [width], changes the window width; the default is 640  
--h [height], changes the window height; the default is 360  
+-i [height], changes the window height; the default is 360  
 -p [port], changes the server port; the default is 27015  
 -b [buffer size], changes the audio buffer size; the default is 4096  
 -s [samples/sec], changes the audio sample rate; the default is 11025  
