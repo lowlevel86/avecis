@@ -89,4 +89,4 @@ Options:
 -h, displays this message  
   
 Example usage:  
-avecis -t 'New Title' -w 400 -h 400 -p 27016 -u  
+avecis -t 'New Title' -w 400 -i 400 -p 27016 -u  
