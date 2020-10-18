@@ -4,7 +4,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lm -pthread -o hello
+//gcc main.c avecis.c -lm -pthread -o hello
 
 void eventCallback(int evType, int keyCode, int xM, int yM)
 {

@@ -5,7 +5,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lm -pthread -o sine
+//gcc main.c avecis.c -lm -pthread -o sine
 
 // Buffer size of avecis window can be increased
 // Enter "avecis -h" into the terminal for usage

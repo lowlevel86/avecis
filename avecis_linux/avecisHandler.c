@@ -88,8 +88,8 @@ void sendMsgEvent(void *dataA, void *dataB)
       return;
    }
 
-   msgEv.xclient.data.l[0] = (int)dataA;
-   msgEv.xclient.data.l[1] = (int)dataB;
+   msgEv.xclient.data.l[0] = (intptr_t)dataA;
+   msgEv.xclient.data.l[1] = (intptr_t)dataB;
    
    XSendEvent(dpy, window_glob, FALSE, NoEventMask, &msgEv);
    XFlush(dpy);
@@ -153,7 +153,6 @@ void receiveCallback(char *bytes, int byteCnt)
    static int opDataBuffInc = 0;
    static uint32_t opType = UNKNOWN;
    static int blockAllData = TRUE;
-   static char errorText[] = "DATA ERROR";
    
    // zero bytes received from client
    if (byteCnt == 0)
@@ -285,7 +284,8 @@ void receiveCallback(char *bytes, int byteCnt)
          
          blockAllData = TRUE;
          
-         sendMsgEvent((void *)PRINT_STATUS, (void *)&errorText[0]);
+         strcpy(textData, "> CLIENT INPUT ERROR");
+         sendMsgEvent((void *)PRINT_STATUS, (void *)0);
          postMsgEvent((void *)END_TRANSMISSION, (void *)0);
          
          return;
@@ -758,7 +758,7 @@ void receiveCallback(char *bytes, int byteCnt)
          
          textData[i] = 0;
          
-         sendMsgEvent((void *)PRINT_STATUS, (void *)&textData[0]);
+         sendMsgEvent((void *)PRINT_STATUS, (void *)0);
          
          // reset variables
          opDataSz = 0;

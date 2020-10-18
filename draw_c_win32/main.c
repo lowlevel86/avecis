@@ -4,7 +4,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lws2_32 -o draw.exe
+//gcc main.c avecis.c -lws2_32 -o draw.exe
 
 #define win_width 640
 #define win_height 360

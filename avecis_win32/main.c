@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <commctrl.h>
 #include "avecisHandler.h"
 #include "sendReceive.h"
@@ -30,16 +31,16 @@ int argCnt = 10;
 
 struct argumentList
 {
-   char *title;
-   int window_x;
-   int window_y;
-   int window_w;
-   int window_h;
-   char *port;
-   int sound_buffer_size;
-   int samples_per_second;
-   int allow_popup;
-   int display_help;
+   intptr_t title;
+   intptr_t window_x;
+   intptr_t window_y;
+   intptr_t window_w;
+   intptr_t window_h;
+   intptr_t port;
+   intptr_t sound_buffer_size;
+   intptr_t samples_per_second;
+   intptr_t allow_popup;
+   intptr_t display_help;
 };
 
 struct argumentList argL;
@@ -94,15 +95,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
    
    // default window settings
-   argL.title = "Avecis";
+   argL.title = (intptr_t)"Avecis";
    argL.window_x = 0;
    argL.window_y = 0;
    argL.window_w = 640;
    argL.window_h = 360;
-   argL.port = "27015";
+   argL.port = (intptr_t)"27015";
    argL.sound_buffer_size = 4096;
    argL.samples_per_second = 11025;
-   argL.allow_popup = FALSE;
+   argL.allow_popup = TRUE;
    argL.display_help = FALSE;
 
    readCmdLineArgs((char *)szCmdLine, flags, argTypes, argCnt, (void ***)&argL);
@@ -118,7 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
    if (!RegisterClass(&wndclass))
    return 0;
 
-   hwnd = CreateWindow(szAppName, TEXT(argL.title),
+   hwnd = CreateWindow(szAppName, TEXT((char *)argL.title),
                        WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX,
                        argL.window_x, argL.window_y,
                        argL.window_w, argL.window_h,
@@ -185,7 +186,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       
       iniGraphics(hwnd, argL.window_w, argL.window_h);
       iniSndBuffs(hwnd, argL.sound_buffer_size, argL.samples_per_second);
-      iniAvecisHandler(argL.port, hwnd);
+      iniAvecisHandler((char *)argL.port, hwnd);
    }
    
    if (WM_SIZE == message)
@@ -265,7 +266,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
       {
          sendInputEvent(DISCONNECT_SIGNAL, 0);
          endAvecisHandler();
-         iniAvecisHandler(argL.port, hwnd);
+         iniAvecisHandler((char *)argL.port, hwnd);
       }
    }
    

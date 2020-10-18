@@ -71,7 +71,7 @@ void receiveCallback(char *bytes, int byteCnt)
    static int opDataBuffInc = 0;
    static uint32_t opType = UNKNOWN;
    static int blockAllData = TRUE;
-   static char errorText[] = "DATA ERROR";
+   static char errorText[] = "> CLIENT INPUT ERROR";
    
    // zero bytes received from client
    if (byteCnt == 0)

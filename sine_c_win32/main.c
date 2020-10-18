@@ -5,7 +5,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lws2_32 -o sine.exe
+//gcc main.c avecis.c -lws2_32 -o sine.exe
 
 // Buffer size of avecis window can be increased
 // Enter "avecis -h" into the terminal for usage

@@ -4,7 +4,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lws2_32 -o hello.exe
+//gcc main.c avecis.c -lws2_32 -o hello.exe
 
 void eventCallback(int evType, int keyCode, int xM, int yM)
 {

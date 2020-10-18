@@ -1,7 +1,7 @@
 # Avecis Specification
 
 ### Description:
-Avecis stands for audio, vector, input server and is a programmable window. Sound, graphics, and keyboard/mouse input can all be accessed and programmed through TCP.  
+Avecis stands for audio, vector, input server and is a programmable window. Sound, graphics, and keyboard/mouse input can be accessed and programmed through TCP.  
 
 ### General Flowchart:
 

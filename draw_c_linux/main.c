@@ -4,7 +4,7 @@
 #define PORT 27015
 
 //compile with:
-//gcc main.c -lm -pthread -o draw
+//gcc main.c avecis.c -lm -pthread -o draw
 
 #define win_width 640
 #define win_height 360

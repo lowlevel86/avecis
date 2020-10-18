@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cmdLineArgs.h"
@@ -142,7 +143,7 @@ void readCmdLineArgs(char *cmdLineStr, char *argFlags,
       
       if (argTypes[i] == int_arg)
       if (getArg(cmdLineStr, argFlags[i], argTypes[i], &arg) != -1)
-      argList[i] = (void **)atoi(arg);
+      argList[i] = (void **)(uintptr_t)atoi(arg);
       
       if (argTypes[i] == float_arg)
       if (getArg(cmdLineStr, argFlags[i], argTypes[i], &arg) != -1)
@@ -153,7 +154,7 @@ void readCmdLineArgs(char *cmdLineStr, char *argFlags,
       
       if (argTypes[i] == only_flag)
       if (getArg(cmdLineStr, argFlags[i], argTypes[i], &arg) != -1)
-      argList[i] = (void **)atoi(arg);
+      argList[i] = (void **)(uintptr_t)atoi(arg);
    }
 }
 
@@ -178,7 +179,8 @@ void mergeCmdLineArgs(char *args[], int argCnt, char **cmdLineStr)
    
    for (i=0; i < argCnt; i++)
    {
-      sprintf(*cmdLineStr, "%s %s", *cmdLineStr, args[i]);
+      strcat(*cmdLineStr, " ");
+      strcat(*cmdLineStr, args[i]);
    }
 }
 

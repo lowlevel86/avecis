@@ -3,6 +3,7 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "avecisHandler.h"
@@ -40,15 +41,15 @@ int argCnt = 10;
 struct argumentList
 {
    char *title;
-   int window_x;
-   int window_y;
-   int window_w;
-   int window_h;
-   int port;
-   int sound_buffer_size;
-   int samples_per_second;
-   int allow_popup;
-   int display_help;
+   intptr_t window_x;
+   intptr_t window_y;
+   intptr_t window_w;
+   intptr_t window_h;
+   intptr_t port;
+   intptr_t sound_buffer_size;
+   intptr_t samples_per_second;
+   intptr_t allow_popup;
+   intptr_t display_help;
 };
 
 struct argumentList argL;
@@ -100,7 +101,7 @@ int main(int argc, char *argv[])
    argL.port = 27015;
    argL.sound_buffer_size = 4096;
    argL.samples_per_second = 11025;
-   argL.allow_popup = FALSE;
+   argL.allow_popup = TRUE;
    argL.display_help = FALSE;
 
    // copy command line args to one line
@@ -287,7 +288,7 @@ int wndEventProc(Display *dpy, Window window)
          showContent();
          
          if (ev.xclient.data.l[0] == PRINT_STATUS)
-         textToStatusBar((char *)ev.xclient.data.l[1]);
+         textToStatusBar(textData);
          
          if (ev.xclient.data.l[0] == END_TRANSMISSION)
          {

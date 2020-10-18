@@ -8,7 +8,7 @@
 #define win_height 360
 
 //compile with:
-//gcc main.c -lm -pthread -o yarn
+//gcc main.c avecis.c -lm -pthread -o yarn
 
 char bgImg[win_width*win_height*3];
 float yarn_static[256*3];
